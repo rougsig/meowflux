@@ -1,8 +1,6 @@
-package com.github.rougsig.sample.processor
+package com.github.rougsig.rxflux.processor
 
-import com.github.rougsig.sample.processor.base.Generator
-import com.github.rougsig.sample.processor.sample.sampleGenerator
-import com.github.rougsig.sample.runtime.SampleAnnotation
+import com.github.rougsig.rxflux.processor.base.Generator
 import com.google.auto.service.AutoService
 import me.eugeniomarletti.kotlin.processing.KotlinAbstractProcessor
 import java.io.File
@@ -11,22 +9,17 @@ import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 
-private const val OPTION_GENERATED = "sample.generated"
+private const val OPTION_GENERATED = "rxflux.generated"
 
 @AutoService(Processor::class)
-class SampleProcessor : KotlinAbstractProcessor() {
-  private val sampleAnnotationClass = SampleAnnotation::class.java
-
-  override fun getSupportedAnnotationTypes() = setOf(sampleAnnotationClass.canonicalName)
+class RxFluxProcessor : KotlinAbstractProcessor() {
+  override fun getSupportedAnnotationTypes(): Set<String> = emptySet()
 
   override fun getSupportedSourceVersion(): SourceVersion = SourceVersion.latest()
 
   override fun getSupportedOptions() = setOf(OPTION_GENERATED)
 
   override fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
-    for (type in roundEnv.getElementsAnnotatedWith(sampleAnnotationClass)) {
-      sampleGenerator.generateAndWrite(Unit)
-    }
     return true
   }
 

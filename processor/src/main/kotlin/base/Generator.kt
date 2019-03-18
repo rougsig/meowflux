@@ -1,4 +1,4 @@
-package com.github.rougsig.sample.processor.base
+package com.github.rougsig.rxflux.processor.base
 
 import com.squareup.kotlinpoet.FileSpec
 

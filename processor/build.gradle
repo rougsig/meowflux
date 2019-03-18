@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(path: ':runtime', configuration: 'default')
+    implementation project(path: ':main', configuration: 'default')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'me.eugeniomarletti.kotlin.metadata:kotlin-metadata:1.4.0'

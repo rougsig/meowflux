@@ -1,4 +1,4 @@
-package com.github.rougsig.sample.processor.extensions
+package com.github.rougsig.rxflux.processor.extensions
 
 import javax.lang.model.element.*
 

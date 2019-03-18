@@ -1,5 +1,8 @@
 package com.github.rougsig.rxflux.processor.extensions
 
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ParameterizedTypeName
+import com.squareup.kotlinpoet.asTypeName
 import javax.lang.model.element.*
 
 internal val Element.enclosedMethods: List<ExecutableElement>
@@ -42,3 +45,13 @@ internal val Element.enclosingPackage: PackageElement
   }
 
 internal val Element.enclosingPackageName get() = enclosingPackage.qualifiedName.toString()
+
+internal val Element.className: ClassName
+  get() {
+    val typeName = asType().asTypeName()
+    return when (typeName) {
+      is ClassName -> typeName
+      is ParameterizedTypeName -> typeName.rawType
+      else -> throw IllegalStateException("unexpected TypeName: ${typeName::class}")
+    }
+  }

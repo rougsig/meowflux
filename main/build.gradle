@@ -6,6 +6,7 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    api "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.1"
 }
 
 apply from: '../gradle/gradle-mvn-push.gradle'

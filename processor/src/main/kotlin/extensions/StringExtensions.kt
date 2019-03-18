@@ -7,3 +7,12 @@ internal fun String.beginWithUpperCase(): String {
     else -> first().toUpperCase() + substring(1)
   }
 }
+
+fun String.beginWithLowerCase(): String {
+  return when (length) {
+    0 -> ""
+    1 -> toLowerCase()
+    else -> first().toLowerCase() + substring(1)
+  }
+}
+

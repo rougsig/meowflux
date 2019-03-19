@@ -1,35 +1,29 @@
 package com.github.rougsig.rxflux.processor.stategenerator
 
 import com.github.rougsig.rxflux.processor.base.*
+import com.github.rougsig.rxflux.processor.extensions.beginWithLowerCase
 import com.github.rougsig.rxflux.processor.extensions.beginWithUpperCase
+import com.github.rougsig.rxflux.processor.extensions.simpleName
 import com.squareup.kotlinpoet.*
 
 internal val stateGenerator = StateGenerator()
 
 private const val MAP_FIELD_NAME = "map"
-private const val FIELDS_INTERFACE_NAME = "Fields"
-private const val ALL_FIELDS_FIELD_NAME = "ALL_FIELDS"
-private const val FIELDS_FIELD_NAME = "FIELDS"
-private const val FIELD_PARAM_NAME = "field"
-private const val VALUE_PARAM_NAME = "value"
-private const val SET_FIELD_FUN_NAME = "setField"
-private const val GET_FIELD_FUN_NAME = "getField"
+private const val OTHER_PARAM_NAME = "other"
 
 internal class StateGenerator : Generator<StateType> {
   override fun generateFile(type: StateType): FileSpec {
-    val stateType = TypeVariableName(type.stateName)
-
     return FileSpec
-      .builder(type.packageName, type.stateName)
+      .builder(type.packageName, type.stateType.name)
       .addImport(KOTLINX_IMMUTABLE, IMMUTABLE_HASH_MAP_OF)
+      .addImport(RXFLUX_CORE, RXFLUX_CORE_REDUCER)
       .addType(TypeSpec
-        .classBuilder(type.stateName)
-        .addFluxStateImplementation(stateType)
-        .addFieldsInterface(stateType, type.fields)
+        .classBuilder(type.stateType.name)
+        .addFluxStateImplementation(type.stateType)
         .addConstructor(type.fields)
-        .addFields(type.stateName, type.fields)
-        .addCompanionObject(stateType, type.fields)
-        .addToString()
+        .addCompanionObject(type.stateType, type.fields)
+        .addFields(type.stateType, type.fields)
+        .addToString(type.stateType, type.fields)
         .build())
       .build()
   }
@@ -40,6 +34,7 @@ internal class StateGenerator : Generator<StateType> {
     this
       .primaryConstructor(FunSpec
         .constructorBuilder()
+        .addModifiers(KModifier.PRIVATE)
         .addParameter(MAP_FIELD_NAME, mapType, KModifier.PRIVATE)
         .build())
       .addProperty(PropertySpec
@@ -49,122 +44,121 @@ internal class StateGenerator : Generator<StateType> {
       .addFunction(FunSpec
         .constructorBuilder()
         .addParameters(fields.map { ParameterSpec.builder(it.name, it.type).build() })
-        .callThisConstructor(CodeBlock.of(
-          "%L = %L(\n${fields.joinToString(",\n") { "  %S to %L" }}\n)",
-          MAP_FIELD_NAME, IMMUTABLE_HASH_MAP_OF, *fields.flatMap { listOf(it.name, it.name) }.toTypedArray()))
+        .callThisConstructor(CodeBlock
+          .builder()
+          .add("%L = %L(",
+            MAP_FIELD_NAME, IMMUTABLE_HASH_MAP_OF)
+          .apply {
+            fields.forEachIndexed { index, field ->
+              add("%S to %L%L",
+                field.name, field.name, if (fields.lastIndex != index) "," else ")")
+            }
+          }
+          .build())
         .build())
   }
 
-  private fun TypeSpec.Builder.addToString() = apply {
+  private fun TypeSpec.Builder.addToString(stateType: TypeName, fields: List<FieldType>) = apply {
     this
       .addFunction(FunSpec
         .builder("toString")
         .addModifiers(KModifier.OVERRIDE)
-        .addStatement("return %L.toString()", MAP_FIELD_NAME)
+        .addStatement("return %L.toString()",
+          MAP_FIELD_NAME)
+        .build())
+      .addFunction(FunSpec
+        .builder("hashCode")
+        .addModifiers(KModifier.OVERRIDE)
+        .addStatement("return %L.hashCode()",
+          MAP_FIELD_NAME)
+        .build())
+      .addFunction(FunSpec
+        .builder("equals")
+        .addModifiers(KModifier.OVERRIDE)
+        .returns(Boolean::class.asTypeName())
+        .addParameter(OTHER_PARAM_NAME, ANY_NULLABLE_TYPE_NAME)
+        .addCode(CodeBlock
+          .builder()
+          .addStatement("if(%L !is %L) return false",
+            OTHER_PARAM_NAME, stateType)
+          .add("return ")
+          .apply {
+            fields.forEachIndexed { index, field ->
+              add("%L[%S] == other.${field.name} %L ",
+                MAP_FIELD_NAME, field.name, if (fields.lastIndex != index) "&&" else "")
+            }
+          }
+          .build())
         .build())
   }
 
-  private fun TypeSpec.Builder.addFields(stateName: String, fields: List<FieldType>) = apply {
+  private fun TypeSpec.Builder.addFields(stateType: TypeVariableName, fields: List<FieldType>) = apply {
     fields.forEach { field ->
       this
         .addProperty(PropertySpec
           .builder(field.name, field.type)
           .getter(FunSpec
             .getterBuilder()
-            .addStatement("return %L[%S] as %T", MAP_FIELD_NAME, field.name, field.type)
+            .addStatement("return %L[%S] as %T",
+              MAP_FIELD_NAME, field.name, field.type)
             .build())
           .build())
         .addFunction(FunSpec
           .builder("set${field.name.beginWithUpperCase()}")
           .addParameter(field.name, field.type)
-          .addStatement("return %L(%L.put(%S, %L))", stateName, MAP_FIELD_NAME, field.name, field.name)
+          .addStatement("return %L(%L.put(%S, %L))",
+            stateType, MAP_FIELD_NAME, field.name, field.name)
           .build())
     }
-  }
-
-  private fun TypeSpec.Builder.addFieldsInterface(stateType: TypeName, fields: List<FieldType>) = apply {
-    this
-      .addType(TypeSpec
-        .interfaceBuilder(FIELDS_INTERFACE_NAME)
-        .addProperties(fields.map { field ->
-          PropertySpec
-            .builder(field.name, createParameterizedFluxStateField(field.type, stateType))
-            .build()
-        })
-        .build())
   }
 
   private fun TypeSpec.Builder.addFluxStateImplementation(stateType: TypeName) = apply {
     this
       .addSuperinterface(createParameterizedFluxState(stateType))
-      .addGetFieldFunction(stateType)
-      .addSetFieldFunction(stateType)
-
   }
 
-  private fun TypeSpec.Builder.addGetFieldFunction(stateType: TypeName) = apply {
-    this
-      .addFunction(FunSpec
-        .builder(SET_FIELD_FUN_NAME)
-        .addModifiers(KModifier.OVERRIDE)
-        .addTypeVariable(TypeVariableName("T"))
-        .addParameter(ParameterSpec
-          .builder(FIELD_PARAM_NAME, createParameterizedFluxStateField(TypeVariableName("T"), stateType))
-          .build())
-        .addParameter(ParameterSpec
-          .builder(VALUE_PARAM_NAME, TypeVariableName("T"))
-          .build())
-        .returns(stateType)
-        .addCode("require(%L.contains(%L)) { \"\$%L not found in \$this\" }\n", ALL_FIELDS_FIELD_NAME, FIELD_PARAM_NAME, FIELD_PARAM_NAME)
-        .addCode("return %L(%L.put(%L.name, %L))\n", stateType, MAP_FIELD_NAME, FIELD_PARAM_NAME, VALUE_PARAM_NAME)
-        .build())
-  }
-
-  private fun TypeSpec.Builder.addSetFieldFunction(stateType: TypeName) = apply {
-    this
-      .addFunction(FunSpec
-        .builder(GET_FIELD_FUN_NAME)
-        .addModifiers(KModifier.OVERRIDE)
-        .addTypeVariable(TypeVariableName("T"))
-        .addParameter(ParameterSpec
-          .builder(FIELD_PARAM_NAME, createParameterizedFluxStateField(TypeVariableName("T"), stateType))
-          .build())
-        .returns(TypeVariableName("T"))
-        .addCode("require(%L.contains(%L)) { \"\$%L not found in \$this\" }\n", ALL_FIELDS_FIELD_NAME, FIELD_PARAM_NAME, FIELD_PARAM_NAME)
-        .addCode("return %L[%L.name] as T\n", MAP_FIELD_NAME, FIELD_PARAM_NAME)
-        .build())
-  }
-
-  private fun TypeSpec.Builder.addCompanionObject(stateType: TypeName, fields: List<FieldType>) = apply {
+  private fun TypeSpec.Builder.addCompanionObject(stateType: TypeVariableName, fields: List<FieldType>) = apply {
     this
       .addType(TypeSpec
         .companionObjectBuilder()
-        .addSuperinterface(createParameterizedFluxStateState(TypeVariableName(FIELDS_INTERFACE_NAME), stateType))
-        .addProperty(PropertySpec
-          .builder(FIELDS_FIELD_NAME, TypeVariableName(FIELDS_INTERFACE_NAME))
-          .addModifiers(KModifier.OVERRIDE)
-          .initializer(CodeBlock
+        .addFunction(FunSpec
+          .builder("combineReducers")
+          .apply {
+            fields.forEach { field ->
+              addParameter(ParameterSpec
+                .builder("${field.name.beginWithLowerCase()}Reducer",
+                  TypeVariableName("Reducer<${field.type.simpleName}, Action>"))
+                .build())
+            }
+          }
+          .addCode(CodeBlock
             .builder()
-            .addStatement("object : %L {", FIELDS_INTERFACE_NAME)
+            .add("return ")
+            .addStatement("{ s: ${stateType.name}?, action: %T ->", ACTION_CLASS_NAME)
+            .addStatement("val state = s ?: %L(%L = %L())",
+              stateType, MAP_FIELD_NAME, IMMUTABLE_HASH_MAP_OF)
             .apply {
               fields.forEach { field ->
-                addStatement(
-                  "override val %L = %T(%S, \"%T\", %S)",
-                  field.name,
-                  createParameterizedFluxStateField(field.type, stateType),
-                  field.name,
-                  field.type,
-                  stateType
-                )
+                val reducerName = "${field.name.beginWithLowerCase()}Reducer"
+                addStatement("val %LOld = state.%L[%S] as? %T",
+                  field.name, MAP_FIELD_NAME, field.name, field.type)
+                addStatement("val %LNew = %L.invoke(%LOld, action)",
+                  field.name, reducerName, field.name)
+              }
+            }
+            .apply {
+              add("state")
+              fields.forEach { field ->
+                add(CodeBlock
+                  .builder()
+                  .addStatement(".let { if (%LOld !== %LNew) it.set%L(%LNew) else it }",
+                    field.name, field.name, field.name.beginWithUpperCase(), field.name)
+                  .build())
               }
             }
             .addStatement("}")
             .build())
-          .build())
-        .addProperty(PropertySpec
-          .builder(ALL_FIELDS_FIELD_NAME, createParameterizedSet(createParameterizedFluxStateField(TypeVariableName("*"), stateType)))
-          .addModifiers(KModifier.OVERRIDE)
-          .initializer("setOf(${fields.joinToString { "$FIELDS_FIELD_NAME.${it.name}" }})")
+          .returns(TypeVariableName("Reducer<${stateType.name}, Action>"))
           .build())
         .build())
   }

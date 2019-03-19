@@ -16,3 +16,6 @@ internal fun TypeName.javaToKotlinType(): TypeName = if (this is ParameterizedTy
   if (className == null) this
   else ClassName.bestGuess(className)
 }
+
+val TypeName.simpleName: String
+  get() = toString().split(".").last()

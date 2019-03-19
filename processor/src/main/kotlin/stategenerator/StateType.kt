@@ -4,6 +4,7 @@ import com.github.rougsig.rxflux.processor.extensions.className
 import com.github.rougsig.rxflux.processor.extensions.enclosedMethods
 import com.github.rougsig.rxflux.processor.extensions.error
 import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeVariableName
 import me.eugeniomarletti.kotlin.metadata.KotlinClassMetadata
 import me.eugeniomarletti.kotlin.metadata.kotlinMetadata
 import me.eugeniomarletti.kotlin.processing.KotlinProcessingEnvironment
@@ -13,7 +14,7 @@ import javax.lang.model.element.TypeElement
 internal data class StateType(
   val fields: List<FieldType>,
   val stateElement: TypeElement,
-  val stateName: String,
+  val stateType: TypeVariableName,
   val packageName: String
 ) {
   companion object {
@@ -29,7 +30,7 @@ internal data class StateType(
       return StateType(
         fields = fields,
         stateElement = el,
-        stateName = generateStateName(el.className.simpleName),
+        stateType = TypeVariableName(generateStateName(el.className.simpleName)),
         packageName = "${el.className.packageName}.generated"
       )
     }

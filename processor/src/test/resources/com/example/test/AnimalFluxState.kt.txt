@@ -1,33 +1,23 @@
 package com.example.test.generated
 
+import com.github.rougsig.rxflux.core.Action
 import com.github.rougsig.rxflux.core.FluxState
+import com.github.rougsig.rxflux.core.Reducer
 import kotlin.Any
-import kotlin.collections.Set
+import kotlin.Boolean
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.immutableHashMapOf
 
-class AnimalFluxState(private val map: ImmutableMap<Any, Any?>) : FluxState<AnimalFluxState> {
+class AnimalFluxState private constructor(private val map: ImmutableMap<Any, Any?>) :
+        FluxState<AnimalFluxState> {
     val duckState: DuckFluxState
         get() = map["duckState"] as DuckFluxState
 
     val catState: CatFluxState
         get() = map["catState"] as CatFluxState
 
-    constructor(duckState: DuckFluxState, catState: CatFluxState) : this(map = immutableHashMapOf(
-      "duckState" to duckState,
-      "catState" to catState
-    ))
-
-    override fun <T> setField(field: FluxState.Field<T, AnimalFluxState>, value: T):
-            AnimalFluxState {
-        require(ALL_FIELDS.contains(field)) { "$field not found in $this" }
-        return AnimalFluxState(map.put(field.name, value))
-    }
-
-    override fun <T> getField(field: FluxState.Field<T, AnimalFluxState>): T {
-        require(ALL_FIELDS.contains(field)) { "$field not found in $this" }
-        return map[field.name] as T
-    }
+    constructor(duckState: DuckFluxState, catState: CatFluxState) : this(map =
+            immutableHashMapOf("duckState" to duckState,"catState" to catState))
 
     fun setDuckState(duckState: DuckFluxState) = AnimalFluxState(map.put("duckState", duckState))
 
@@ -35,22 +25,23 @@ class AnimalFluxState(private val map: ImmutableMap<Any, Any?>) : FluxState<Anim
 
     override fun toString() = map.toString()
 
-    interface Fields {
-        val duckState: FluxState.Field<DuckFluxState, AnimalFluxState>
+    override fun hashCode() = map.hashCode()
 
-        val catState: FluxState.Field<CatFluxState, AnimalFluxState>
-    }
+    override fun equals(other: Any?): Boolean {
+        if(other !is AnimalFluxState) return false
+        return map["duckState"] == other.duckState && map["catState"] == other.catState  }
 
-    companion object : FluxState.State<Fields, AnimalFluxState> {
-        override val FIELDS: Fields = object : Fields {
-        override val duckState = FluxState.Field<DuckFluxState, AnimalFluxState>("duckState",
-                "DuckFluxState", "AnimalFluxState")
-        override val catState = FluxState.Field<CatFluxState, AnimalFluxState>("catState",
-                "CatFluxState", "AnimalFluxState")
+    companion object {
+        fun combineReducers(duckStateReducer: Reducer<DuckFluxState, Action>,
+                catStateReducer: Reducer<CatFluxState, Action>): Reducer<AnimalFluxState, Action> =
+                { s: AnimalFluxState?, action: Action ->
+        val state = s ?: AnimalFluxState(map = immutableHashMapOf())
+        val duckStateOld = state.map["duckState"] as? DuckFluxState
+        val duckStateNew = duckStateReducer.invoke(duckStateOld, action)
+        val catStateOld = state.map["catState"] as? CatFluxState
+        val catStateNew = catStateReducer.invoke(catStateOld, action)
+        state.let { if (duckStateOld !== duckStateNew) it.setDuckState(duckStateNew) else it }
+        .let { if (catStateOld !== catStateNew) it.setCatState(catStateNew) else it }
         }
-
-
-        override val ALL_FIELDS: Set<FluxState.Field<*, AnimalFluxState>> = setOf(FIELDS.duckState,
-                FIELDS.catState)
-    }
-}
+            }
+        }

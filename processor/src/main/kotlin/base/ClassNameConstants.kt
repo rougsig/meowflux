@@ -38,3 +38,8 @@ internal val FLUX_STATE_STATE_CLASS_NAME = FluxState.State::class.asClassName()
 internal fun createParameterizedFluxStateState(fieldsType: TypeName, stateType: TypeName): TypeName {
   return FLUX_STATE_STATE_CLASS_NAME.parameterizedBy(fieldsType, stateType)
 }
+
+internal val CLASS_CLASS_NAME = Class::class.asClassName()
+internal fun createParameterizedClass(type: TypeName): TypeName {
+  return CLASS_CLASS_NAME.parameterizedBy(type)
+}

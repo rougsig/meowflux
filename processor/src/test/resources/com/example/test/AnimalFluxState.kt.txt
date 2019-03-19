@@ -6,11 +6,7 @@ import kotlin.collections.Set
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.immutableHashMapOf
 
-internal class AnimalFluxState(private val map: ImmutableMap<Any, Any?>) :
-        FluxState<AnimalFluxState> {
-    override val ALL_FIELDS: Set<FluxState.Field<*, AnimalFluxState>>
-        get() = Companion.ALL_FIELDS
-
+class AnimalFluxState(private val map: ImmutableMap<Any, Any?>) : FluxState<AnimalFluxState> {
     val duckState: DuckFluxState
         get() = map["duckState"] as DuckFluxState
 

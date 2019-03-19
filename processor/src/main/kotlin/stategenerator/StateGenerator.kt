@@ -26,7 +26,6 @@ internal class StateGenerator : Generator<StateType> {
         .classBuilder(type.stateName)
         .addFluxStateImplementation(stateType)
         .addFieldsInterface(stateType, type.fields)
-        .addModifiers(KModifier.INTERNAL)
         .addConstructor(type.fields)
         .addFields(type.stateName, type.fields)
         .addCompanionObject(stateType, type.fields)
@@ -98,14 +97,6 @@ internal class StateGenerator : Generator<StateType> {
   private fun TypeSpec.Builder.addFluxStateImplementation(stateType: TypeName) = apply {
     this
       .addSuperinterface(createParameterizedFluxState(stateType))
-      .addProperty(PropertySpec
-        .builder(ALL_FIELDS_FIELD_NAME, createParameterizedSet(createParameterizedFluxStateField(TypeVariableName("*"), stateType)))
-        .addModifiers(KModifier.OVERRIDE)
-        .getter(FunSpec
-          .getterBuilder()
-          .addStatement("return Companion.%L", ALL_FIELDS_FIELD_NAME)
-          .build())
-        .build())
       .addGetFieldFunction(stateType)
       .addSetFieldFunction(stateType)
 

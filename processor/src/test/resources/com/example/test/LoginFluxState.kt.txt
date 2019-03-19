@@ -7,11 +7,7 @@ import kotlin.collections.Set
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.immutableHashMapOf
 
-internal class LoginFluxState(private val map: ImmutableMap<Any, Any?>) : FluxState<LoginFluxState>
-        {
-    override val ALL_FIELDS: Set<FluxState.Field<*, LoginFluxState>>
-        get() = Companion.ALL_FIELDS
-
+class LoginFluxState(private val map: ImmutableMap<Any, Any?>) : FluxState<LoginFluxState> {
     val phone: String
         get() = map["phone"] as String
 

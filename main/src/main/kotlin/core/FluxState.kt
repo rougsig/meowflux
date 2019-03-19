@@ -1,12 +1,12 @@
 package com.github.rougsig.rxflux.core
 
-interface FluxState<S : Any> {
-  interface State<F, S : Any> {
+interface FluxState<S> {
+  interface State<F, S> {
     val FIELDS: F
     val ALL_FIELDS: Set<Field<*, S>>
   }
 
-  class Field<T, S : Any>(
+  class Field<T, S>(
       val name: String,
       private val type: String,
       private val state: String
@@ -23,8 +23,6 @@ interface FluxState<S : Any> {
       return name.hashCode()
     }
   }
-
-  val ALL_FIELDS: Set<Field<*, S>>
 
   fun <T : Any?> setField(field: FluxState.Field<T, S>, value: T): S
 

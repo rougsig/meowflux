@@ -1,0 +1,60 @@
+package com.example.test.generated
+
+import com.github.rougsig.rxflux.core.FluxState
+import kotlin.Any
+import kotlin.String
+import kotlin.collections.Set
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.immutableHashMapOf
+
+internal class LoginFluxState(private val map: ImmutableMap<Any, Any?>) : FluxState<LoginFluxState>
+        {
+    override val ALL_FIELDS: Set<FluxState.Field<*, LoginFluxState>>
+        get() = Companion.ALL_FIELDS
+
+    val phone: String
+        get() = map["phone"] as String
+
+    val password: String?
+        get() = map["password"] as String?
+
+    constructor(phone: String, password: String?) : this(map = immutableHashMapOf(
+      "phone" to phone,
+      "password" to password
+    ))
+
+    override fun <T> setField(field: FluxState.Field<T, LoginFluxState>, value: T): LoginFluxState {
+        require(ALL_FIELDS.contains(field)) { "$field not found in $this" }
+        return LoginFluxState(map.put(field.name, value))
+    }
+
+    override fun <T> getField(field: FluxState.Field<T, LoginFluxState>): T {
+        require(ALL_FIELDS.contains(field)) { "$field not found in $this" }
+        return map[field.name] as T
+    }
+
+    fun setPhone(phone: String) = LoginFluxState(map.put("phone", phone))
+
+    fun setPassword(password: String?) = LoginFluxState(map.put("password", password))
+
+    override fun toString() = map.toString()
+
+    interface Fields {
+        val phone: FluxState.Field<String, LoginFluxState>
+
+        val password: FluxState.Field<String?, LoginFluxState>
+    }
+
+    companion object : FluxState.State<Fields, LoginFluxState> {
+        override val FIELDS: Fields = object : Fields {
+        override val phone = FluxState.Field<String, LoginFluxState>("phone", "String",
+                "LoginFluxState")
+        override val password = FluxState.Field<String?, LoginFluxState>("password", "String?",
+                "LoginFluxState")
+        }
+
+
+        override val ALL_FIELDS: Set<FluxState.Field<*, LoginFluxState>> = setOf(FIELDS.phone,
+                FIELDS.password)
+    }
+}

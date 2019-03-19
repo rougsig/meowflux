@@ -1,9 +1,9 @@
 package com.example.test
 
-import com.github.rougsig.rxflux.annotations.FluxState
+import com.github.rougsig.rxflux.annotations.CreateFluxState
 
-@FluxState
+@CreateFluxState
 private interface LoginState {
-  val phone: String?
+  val phone: String
   val password: String?
 }

@@ -1,0 +1,60 @@
+package com.example.test.generated
+
+import com.github.rougsig.rxflux.core.FluxState
+import kotlin.Any
+import kotlin.collections.Set
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.immutableHashMapOf
+
+internal class AnimalFluxState(private val map: ImmutableMap<Any, Any?>) :
+        FluxState<AnimalFluxState> {
+    override val ALL_FIELDS: Set<FluxState.Field<*, AnimalFluxState>>
+        get() = Companion.ALL_FIELDS
+
+    val duckState: DuckFluxState
+        get() = map["duckState"] as DuckFluxState
+
+    val catState: CatFluxState
+        get() = map["catState"] as CatFluxState
+
+    constructor(duckState: DuckFluxState, catState: CatFluxState) : this(map = immutableHashMapOf(
+      "duckState" to duckState,
+      "catState" to catState
+    ))
+
+    override fun <T> setField(field: FluxState.Field<T, AnimalFluxState>, value: T):
+            AnimalFluxState {
+        require(ALL_FIELDS.contains(field)) { "$field not found in $this" }
+        return AnimalFluxState(map.put(field.name, value))
+    }
+
+    override fun <T> getField(field: FluxState.Field<T, AnimalFluxState>): T {
+        require(ALL_FIELDS.contains(field)) { "$field not found in $this" }
+        return map[field.name] as T
+    }
+
+    fun setDuckState(duckState: DuckFluxState) = AnimalFluxState(map.put("duckState", duckState))
+
+    fun setCatState(catState: CatFluxState) = AnimalFluxState(map.put("catState", catState))
+
+    override fun toString() = map.toString()
+
+    interface Fields {
+        val duckState: FluxState.Field<DuckFluxState, AnimalFluxState>
+
+        val catState: FluxState.Field<CatFluxState, AnimalFluxState>
+    }
+
+    companion object : FluxState.State<Fields, AnimalFluxState> {
+        override val FIELDS: Fields = object : Fields {
+        override val duckState = FluxState.Field<DuckFluxState, AnimalFluxState>("duckState",
+                "DuckFluxState", "AnimalFluxState")
+        override val catState = FluxState.Field<CatFluxState, AnimalFluxState>("catState",
+                "CatFluxState", "AnimalFluxState")
+        }
+
+
+        override val ALL_FIELDS: Set<FluxState.Field<*, AnimalFluxState>> = setOf(FIELDS.duckState,
+                FIELDS.catState)
+    }
+}

@@ -3,6 +3,7 @@ apply plugin: 'kotlin-kapt'
 
 dependencies {
     implementation project(path: ':main', configuration: 'default')
+    kapt project(path: ':processor', configuration: 'default')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.google.auto.service:auto-service:1.0-rc4'

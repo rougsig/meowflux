@@ -1,12 +1,9 @@
 package com.github.rougsig.rxflux.processor.extensions
 
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.asClassName
-import javax.lang.model.element.TypeElement
-import javax.lang.model.type.DeclaredType
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.asTypeName
 import javax.lang.model.type.TypeMirror
 
-internal fun TypeMirror.asClassName(): ClassName {
-  return ((this as? DeclaredType)?.asElement() as? TypeElement)?.asClassName()
-      ?: throw IllegalArgumentException("expected $this to refer to the declared class")
+internal fun TypeMirror.asTypeName(): TypeName {
+  return this.asTypeName()
 }

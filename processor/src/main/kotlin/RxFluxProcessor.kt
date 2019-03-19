@@ -1,7 +1,8 @@
 package com.github.rougsig.rxflux.processor
 
-import com.github.rougsig.rxflux.annotations.FluxState
+import com.github.rougsig.rxflux.annotations.CreateFluxState
 import com.github.rougsig.rxflux.processor.base.Generator
+import com.github.rougsig.rxflux.processor.extensions.asTypeName
 import com.github.rougsig.rxflux.processor.stategenerator.StateType
 import com.github.rougsig.rxflux.processor.stategenerator.stateGenerator
 import com.google.auto.service.AutoService
@@ -16,7 +17,7 @@ private const val OPTION_GENERATED = "rxflux.generated"
 
 @AutoService(Processor::class)
 class RxFluxProcessor : KotlinAbstractProcessor() {
-  private val fluxStateAnnotationClass = FluxState::class.java
+  private val fluxStateAnnotationClass = CreateFluxState::class.java
 
   override fun getSupportedAnnotationTypes(): Set<String> = setOf(fluxStateAnnotationClass.canonicalName)
 
@@ -25,8 +26,10 @@ class RxFluxProcessor : KotlinAbstractProcessor() {
   override fun getSupportedOptions() = setOf(OPTION_GENERATED)
 
   override fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
-    for (type in roundEnv.getElementsAnnotatedWith(fluxStateAnnotationClass)) {
-      val stateType = StateType.get(this, type) ?: continue
+    val fluxStates = roundEnv.getElementsAnnotatedWith(fluxStateAnnotationClass)
+    val fluxStateNames = fluxStates.map { it.asType().asTypeName() }.toSet()
+    for (fluxState in fluxStates) {
+      val stateType = StateType.get(this, fluxState, fluxStateNames) ?: continue
       stateGenerator.generateAndWrite(stateType)
     }
     return true

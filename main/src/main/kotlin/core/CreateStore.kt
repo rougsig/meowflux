@@ -11,13 +11,12 @@ interface Store<S : Any, A : Action> : Consumer<A>, ObservableSource<S> {
 
 inline fun <S : Any> createStore(
   crossinline reducer: Reducer<S, Action>,
-  initialState: S? = null,
-  middleware: List<Middleware<S>> = emptyList()
+  vararg middleware: Middleware<S>
 ): Store<S, Action> {
   return object : Store<S, Action> {
     private val relay = PublishRelay.create<S>()
     @Volatile
-    private var store = initialState
+    private var store: S? = null
       set(value) {
         field = value
         value?.let { relay.accept(it) }
@@ -29,8 +28,14 @@ inline fun <S : Any> createStore(
     private val dispatcher = middleware
       .reversed()
       .fold({ a: Action -> dispatch(a) }, { dispatcher, middleware ->
-        middleware({ a: Action -> accept(a) }, { store })(dispatcher)
+        middleware({ store }, dispatcher)
       })
+
+    init {
+      accept(object : Action {
+        override val name: String = "@@INIT"
+      })
+    }
 
     override fun accept(action: Action) {
       dispatcher(action)

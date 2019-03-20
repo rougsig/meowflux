@@ -1,4 +1,3 @@
 package com.github.rougsig.rxflux.core
 
-typealias Dispatcher = (Action) -> Unit
-typealias Middleware<S> = (Dispatcher, () -> S?) -> (Dispatcher) -> Dispatcher
+typealias Middleware<S> = (store: () -> S?, nextDispatcher: Dispatcher) -> Dispatcher

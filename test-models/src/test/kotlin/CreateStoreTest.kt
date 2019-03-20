@@ -54,17 +54,15 @@ class CreateStoreTest : TestCase() {
   }
 
   fun testStoreMiddleware() {
-    val decMiddleware: Middleware<CatFluxState> = { _, state ->
-      { next ->
-        { action ->
-          if (state.invoke()?.counter == 1) {
-            next(CounterAction.Dec)
-          }
-          next(action)
+    val decMiddleware: Middleware<CatFluxState> = { state, next ->
+      { action ->
+        if (state.invoke()?.counter == 1) {
+          next(CounterAction.Dec)
         }
+        next(action)
       }
     }
-    val store = createStore(reducer, middleware = listOf(decMiddleware))
+    val store = createStore(reducer, decMiddleware)
 
     store.accept(CounterAction.Inc)
     assertEquals(1, store.state.counter)

@@ -24,10 +24,10 @@ class CreateStoreTest : TestCase() {
   fun testCreateStore() {
     val store = createStore(reducer)
 
-    store.accept(CounterAction.Inc)
+    store.dispatch(CounterAction.Inc)
     assertEquals(1, store.state.counter)
 
-    store.accept(CounterAction.Dec)
+    store.dispatch(CounterAction.Dec)
     assertEquals(0, store.state.counter)
   }
 
@@ -37,8 +37,8 @@ class CreateStoreTest : TestCase() {
     val observer = TestObserver<CatFluxState>()
     store.stateLive.subscribe(observer)
 
-    store.accept(CounterAction.Inc)
-    store.accept(CounterAction.Dec)
+    store.dispatch(CounterAction.Inc)
+    store.dispatch(CounterAction.Dec)
 
     observer.values()
 
@@ -51,21 +51,19 @@ class CreateStoreTest : TestCase() {
   }
 
   fun testStoreMiddleware() {
-    val decMiddleware = object : Middleware<CatFluxState> {
-      override fun create(state: () -> CatFluxState, nextDispatcher: Dispatcher): Dispatcher {
-        return { action ->
-          if (state().counter == 1) {
-            nextDispatcher(CounterAction.Dec)
-          }
-          nextDispatcher(action)
+    val decMiddleware: Middleware<CatFluxState> = createMiddleware { state, nextDispatcher ->
+      createDispatcher { action ->
+        if (state().counter == 1) {
+          nextDispatcher.dispatch(CounterAction.Dec)
         }
+        nextDispatcher.dispatch(action)
       }
     }
     val store = createStore(reducer, decMiddleware)
 
-    store.accept(CounterAction.Inc)
+    store.dispatch(CounterAction.Inc)
     assertEquals(1, store.state.counter)
-    store.accept(CounterAction.Inc)
+    store.dispatch(CounterAction.Inc)
     assertEquals(1, store.state.counter)
   }
 }

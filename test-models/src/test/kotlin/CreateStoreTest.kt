@@ -38,7 +38,7 @@ class CreateStoreTest : TestCase() {
     val store = createStore(reducer)
 
     val observer = TestObserver<CatFluxState>()
-    store.subscribe(observer)
+    store.stateLive.subscribe(observer)
 
     store.accept(CounterAction.Inc)
     store.accept(CounterAction.Dec)

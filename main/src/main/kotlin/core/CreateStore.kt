@@ -1,12 +1,12 @@
 package com.github.rougsig.rxflux.core
 
 import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.ObservableSource
-import io.reactivex.Observer
+import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 
-interface Store<S : Any, A : Action> : Consumer<A>, ObservableSource<S> {
+interface Store<S : Any, A : Action> : Consumer<A> {
   val state: S
+  val stateLive: Observable<S>
 }
 
 inline fun <S : Any> createStore(
@@ -14,7 +14,6 @@ inline fun <S : Any> createStore(
   vararg middleware: Middleware<S>
 ): Store<S, Action> {
   return object : Store<S, Action> {
-    private val relay = PublishRelay.create<S>()
     @Volatile
     private var store: S? = null
       set(value) {
@@ -22,14 +21,19 @@ inline fun <S : Any> createStore(
         value?.let { relay.accept(it) }
       }
 
-    override val state: S
-      get() = store!!
+    private val relay = PublishRelay.create<S>()
 
     private val dispatcher = middleware
       .reversed()
       .fold({ a: Action -> dispatch(a) }, { dispatcher, middleware ->
         middleware({ store }, dispatcher)
       })
+
+    override val state: S
+      get() = store!!
+
+    override val stateLive: Observable<S>
+      get() = relay
 
     init {
       accept(object : Action {
@@ -39,10 +43,6 @@ inline fun <S : Any> createStore(
 
     override fun accept(action: Action) {
       dispatcher(action)
-    }
-
-    override fun subscribe(observer: Observer<in S>) {
-      relay.subscribe(observer)
     }
 
     private fun dispatch(action: Action) {

@@ -8,3 +8,5 @@ build/
 !.idea/vsc.xml
 !.idea/gradle.xml
 !.idea/codeStyles/*
+
+local.properties

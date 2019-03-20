@@ -1,3 +1,4 @@
-include ':processor',
-        ':main',
-        ':test-models'
+include ':rx-flux:processor',
+        ':rx-flux:core',
+        ":rx-flux:test-models",
+        ":android-example:app"

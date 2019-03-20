@@ -1,3 +1,5 @@
 package com.github.rougsig.rxflux.core
 
-typealias Middleware<S> = (store: () -> S?, nextDispatcher: Dispatcher) -> Dispatcher
+interface Middleware<S> {
+  fun create(state: () -> S, nextDispatcher: Dispatcher): Dispatcher
+}

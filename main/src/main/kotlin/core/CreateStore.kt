@@ -26,7 +26,7 @@ inline fun <S : Any> createStore(
     private val dispatcher = middleware
       .reversed()
       .fold({ a: Action -> dispatch(a) }, { dispatcher, middleware ->
-        middleware({ store }, dispatcher)
+        middleware.create(this::state, dispatcher)
       })
 
     override val state: S

@@ -19,7 +19,6 @@ internal class StateGenerator : Generator<StateType> {
       .addImport(RXFLUX_CORE, RXFLUX_CORE_REDUCER)
       .addType(TypeSpec
         .classBuilder(type.stateType.name)
-        .addFluxStateImplementation(type.stateType)
         .addConstructor(type.fields)
         .addCompanionObject(type.stateType, type.fields)
         .addFields(type.stateType, type.fields)
@@ -110,11 +109,6 @@ internal class StateGenerator : Generator<StateType> {
             stateType, MAP_FIELD_NAME, field.name, field.name)
           .build())
     }
-  }
-
-  private fun TypeSpec.Builder.addFluxStateImplementation(stateType: TypeName) = apply {
-    this
-      .addSuperinterface(createParameterizedFluxState(stateType))
   }
 
   private fun TypeSpec.Builder.addCompanionObject(stateType: TypeVariableName, fields: List<FieldType>) = apply {

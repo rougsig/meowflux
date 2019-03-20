@@ -1,7 +1,6 @@
 package com.example.test.generated
 
 import com.github.rougsig.rxflux.core.Action
-import com.github.rougsig.rxflux.core.FluxState
 import com.github.rougsig.rxflux.core.Reducer
 import kotlin.Any
 import kotlin.Boolean
@@ -9,8 +8,7 @@ import kotlin.String
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.immutableHashMapOf
 
-class LoginFluxState private constructor(private val map: ImmutableMap<Any, Any?>) :
-        FluxState<LoginFluxState> {
+class LoginFluxState private constructor(private val map: ImmutableMap<Any, Any?>) {
     val phone: String
         get() = map["phone"] as String
 

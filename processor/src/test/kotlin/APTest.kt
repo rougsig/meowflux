@@ -1,4 +1,4 @@
-package com.github.rougsig.mvifake.processor
+package com.github.rougsig.rxflux.processor
 
 import com.google.common.collect.ImmutableList
 import com.google.common.io.Files

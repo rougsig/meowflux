@@ -1,6 +1,4 @@
-package com.github.rougsig.mvifake.processor
-
-import com.github.rougsig.rxflux.processor.RxFluxProcessor
+package com.github.rougsig.rxflux.processor
 
 class StateGeneratorTest : APTest("com.example.test") {
   fun testLoginState() {

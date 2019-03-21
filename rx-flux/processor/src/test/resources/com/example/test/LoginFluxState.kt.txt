@@ -1,24 +1,28 @@
 package com.example.test.generated
 
+import com.example.test.Phone
 import com.github.rougsig.rxflux.core.Action
 import com.github.rougsig.rxflux.core.Reducer
 import kotlin.Any
 import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
 import kotlin.String
+import kotlin.Unit
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.immutableHashMapOf
 
 class LoginFluxState private constructor(private val map: ImmutableMap<Any, Any?>) {
-    val phone: String
-        get() = map["phone"] as String
+    val phone: Phone<Int, Long, Unit>
+        get() = map["phone"] as Phone<Int, Long, Unit>
 
     val password: String?
         get() = map["password"] as String?
 
-    constructor(phone: String, password: String?) : this(map = immutableHashMapOf("phone" to
-            phone,"password" to password))
+    constructor(phone: Phone<Int, Long, Unit>, password: String?) : this(map =
+            immutableHashMapOf("phone" to phone,"password" to password))
 
-    fun setPhone(phone: String) = LoginFluxState(map.put("phone", phone))
+    fun setPhone(phone: Phone<Int, Long, Unit>) = LoginFluxState(map.put("phone", phone))
 
     fun setPassword(password: String?) = LoginFluxState(map.put("password", password))
 
@@ -31,10 +35,11 @@ class LoginFluxState private constructor(private val map: ImmutableMap<Any, Any?
         return map["phone"] == other.phone && map["password"] == other.password  }
 
     companion object {
-        fun combineReducers(phoneReducer: Reducer<String, Action>, passwordReducer: Reducer<String?,
-                Action>): Reducer<LoginFluxState, Action> = { s: LoginFluxState?, action: Action ->
+        fun combineReducers(phoneReducer: Reducer<Phone<Int, Long, Unit>, Action>,
+                passwordReducer: Reducer<String?, Action>): Reducer<LoginFluxState, Action> = { s:
+                LoginFluxState?, action: Action ->
         val state = s ?: LoginFluxState(map = immutableHashMapOf())
-        val phoneOld = state.map["phone"] as? String
+        val phoneOld = state.map["phone"] as? Phone<Int, Long, Unit>
         val phoneNew = phoneReducer.invoke(phoneOld, action)
         val passwordOld = state.map["password"] as? String?
         val passwordNew = passwordReducer.invoke(passwordOld, action)

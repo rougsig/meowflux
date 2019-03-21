@@ -27,6 +27,7 @@ class CombineReducersTest : TestCase() {
         s.setCounter(s.counter - 1)
     }
   }
+
   private val duckReducer = createReducer(DuckFluxState(0)) { s: DuckFluxState, a: DuckCounterAction ->
     when (a) {
       DuckCounterAction.Inc ->

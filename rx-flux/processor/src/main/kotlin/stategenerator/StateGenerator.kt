@@ -3,8 +3,8 @@ package com.github.rougsig.rxflux.processor.stategenerator
 import com.github.rougsig.rxflux.processor.base.*
 import com.github.rougsig.rxflux.processor.extensions.beginWithLowerCase
 import com.github.rougsig.rxflux.processor.extensions.beginWithUpperCase
-import com.github.rougsig.rxflux.processor.extensions.simpleName
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 internal val stateGenerator = StateGenerator()
 
@@ -16,7 +16,6 @@ internal class StateGenerator : Generator<StateType> {
     return FileSpec
       .builder(type.packageName, type.stateType.name)
       .addImport(KOTLINX_IMMUTABLE, IMMUTABLE_HASH_MAP_OF)
-      .addImport(RXFLUX_CORE, RXFLUX_CORE_REDUCER)
       .addType(TypeSpec
         .classBuilder(type.stateType.name)
         .addConstructor(type.fields)
@@ -121,7 +120,9 @@ internal class StateGenerator : Generator<StateType> {
             fields.forEach { field ->
               addParameter(ParameterSpec
                 .builder("${field.name.beginWithLowerCase()}Reducer",
-                  TypeVariableName("Reducer<${field.type.simpleName}, Action>"))
+                  ClassName(RXFLUX_CORE, "Reducer")
+                    .parameterizedBy(field.type, ACTION_CLASS_NAME)
+                )
                 .build())
             }
           }

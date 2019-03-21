@@ -1,4 +1,9 @@
 include ':rx-flux:processor',
         ':rx-flux:core',
         ":rx-flux:test-models",
-        ":android-example:app"
+
+        ":android-example:app",
+        ":android-example:domain",
+        ":android-example:repository",
+        ":android-example:entity",
+        ":android-example:core"

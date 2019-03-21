@@ -1,7 +1,7 @@
 import com.github.rougsig.ApkConfig
 import com.github.rougsig.Deps
 
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
@@ -9,7 +9,6 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion ApkConfig.COMPILE_SDK_VERSION
     defaultConfig {
-        applicationId ApkConfig.APPLICATION_ID
         minSdkVersion ApkConfig.MIN_SDK_VERSION
         targetSdkVersion ApkConfig.TARGET_SDK_VERSION
     }

@@ -8,11 +8,11 @@ interface Store<S : Any> : Dispatcher {
   val stateLive: Observable<S>
 }
 
-inline fun <S : Any> createStore(
-  crossinline reducer: Reducer<S, Action>,
+fun <S : Any> createStore(
+  reducer: Reducer<S, Action>,
   vararg middleware: Middleware<S>,
   initialState: S? = null
-  ): Store<S> {
+): Store<S> {
   return object : Store<S> {
     @Volatile
     private var store: S? = initialState
@@ -46,7 +46,7 @@ inline fun <S : Any> createStore(
 
     private fun dispatchAction(action: Action) {
       synchronized(this) {
-        store = reducer(store, action)
+        store = reducer.invoke(store, action)
       }
     }
   }

@@ -22,11 +22,15 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
-    implementation Deps.kotlinStdLib
+    implementation project(":android-example:core")
+    implementation project(":android-example:repository")
 
-    implementation Deps.rxJava
-    implementation Deps.rxRelay
+    kapt AndroidDeps.toothpickProcessor
 }

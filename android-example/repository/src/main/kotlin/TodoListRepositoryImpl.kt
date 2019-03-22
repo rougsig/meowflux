@@ -38,12 +38,15 @@ internal class TodoListRepositoryImpl : TodoListRepository {
           text = todoDescription
         ))
       }
+      .delay(2L, TimeUnit.SECONDS)
   }
 
   override fun removeTodoItem(id: Long): Completable {
-    return Completable.fromCallable {
-      if (todoList.find { it.id == id }?.let(todoList::remove) != true)
-        throw IllegalStateException("cannot remove todo with id: $id")
-    }
+    return Completable
+      .fromCallable {
+        if (todoList.find { it.id == id }?.let(todoList::remove) != true)
+          throw IllegalStateException("cannot remove todo with id: $id")
+      }
+      .delay(2L, TimeUnit.SECONDS)
   }
 }

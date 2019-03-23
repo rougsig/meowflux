@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/android-example/app" />
             <option value="$PROJECT_DIR$/android-example/core" />
             <option value="$PROJECT_DIR$/android-example/domain" />
+            <option value="$PROJECT_DIR$/android-example/domain-todo-list" />
             <option value="$PROJECT_DIR$/android-example/entity" />
             <option value="$PROJECT_DIR$/android-example/repository" />
             <option value="$PROJECT_DIR$/buildSrc" />

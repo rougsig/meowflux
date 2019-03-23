@@ -1,4 +1,4 @@
-package com.github.rougsig.rxflux.android.domain
+package com.github.rougsig.rxflux.android.domain.todolist
 
 import com.github.rougsig.rxflux.android.enitity.TodoItem
 import com.github.rougsig.rxflux.android.repository.TodoListRepository

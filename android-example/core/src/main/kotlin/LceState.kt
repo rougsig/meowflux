@@ -1,4 +1,4 @@
-package com.github.rougsig.rxflux.android.domain
+package com.github.rougsig.rxflux.android.core
 
 data class LceState<out Content>(
   val isLoading: Boolean,

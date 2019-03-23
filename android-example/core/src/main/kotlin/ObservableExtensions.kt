@@ -1,6 +1,5 @@
-package com.github.rougsig.rxflux.android.domain.extenstions
+package com.github.rougsig.rxflux.android.core
 
-import com.github.rougsig.rxflux.android.domain.LceState
 import com.github.rougsig.rxflux.core.Action
 import io.reactivex.Observable
 

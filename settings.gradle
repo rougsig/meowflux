@@ -4,6 +4,7 @@ include ':rx-flux:processor',
 
         ":android-example:app",
         ":android-example:domain",
+        ":android-example:domain-todo-list",
         ":android-example:repository",
         ":android-example:entity",
         ":android-example:core"

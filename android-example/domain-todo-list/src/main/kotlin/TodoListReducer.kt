@@ -1,6 +1,6 @@
 package com.github.rougsig.rxflux.android.domain.todolist
 
-import com.github.rougsig.rxflux.android.domain.LceState
+import com.github.rougsig.rxflux.android.core.LceState
 import com.github.rougsig.rxflux.android.domain.todolist.generated.TodoListFluxState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
 import com.github.rougsig.rxflux.core.Action

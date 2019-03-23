@@ -1,5 +1,6 @@
 import com.github.rougsig.ApkConfig
 import com.github.rougsig.Deps
+import com.github.rougsig.AndroidDeps
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
@@ -32,5 +33,8 @@ dependencies {
     implementation project(":android-example:core")
     implementation project(":android-example:repository")
 
+    testImplementation Deps.unitTestLibs
+
     kapt AndroidDeps.toothpickProcessor
+    kapt project(":rx-flux:processor")
 }

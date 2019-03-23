@@ -3,9 +3,11 @@ package com.github.rougsig.rxflux.core
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 
-interface Store<S : Any> : Dispatcher {
+interface Store<S : Any> {
   val state: S
   val stateLive: Observable<S>
+
+  fun dispatch(action: Action)
 }
 
 fun <S : Any> createStore(
@@ -31,22 +33,25 @@ fun <S : Any> createStore(
       get() = relay
 
     init {
-      dispatchAction(object : Action {
-        override val name: String = "@@INIT"
-      })
+      dispatchAction(InitAction)
 
-      dispatcher = middleware.fold(createDispatcher { a: Action -> dispatchAction(a) }) { dispatcher, middleware ->
-        middleware.create({ state }, dispatcher)
-      }
+      dispatcher = middleware
+        .reversed()
+        .fold({ a: Action -> dispatchAction(a) }, { dispatcher, middleware ->
+          middleware({ state }, { a: Action -> dispatch(a) })(dispatcher)
+        })
     }
 
     override fun dispatch(action: Action) {
-      dispatcher.dispatch(action)
+      dispatcher(action)
     }
 
     private fun dispatchAction(action: Action) {
       synchronized(this) {
-        store = reducer.invoke(store, action)
+        val newStore = reducer.invoke(store, action)
+        if (newStore !== store) {
+          store = newStore
+        }
       }
     }
   }

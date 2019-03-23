@@ -1,6 +1,8 @@
 package com.github.rougsig.rxflux.core
 
-interface Action {
+abstract class Action {
   val name: String
     get() = this.javaClass.simpleName
 }
+
+internal object InitAction: Action()

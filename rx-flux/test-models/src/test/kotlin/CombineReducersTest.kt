@@ -9,12 +9,12 @@ import junit.framework.TestCase
 
 class CombineReducersTest : TestCase() {
 
-  sealed class CatCounterAction : Action {
+  sealed class CatCounterAction : Action() {
     object Inc : CatCounterAction()
     object Dec : CatCounterAction()
   }
 
-  sealed class DuckCounterAction : Action {
+  sealed class DuckCounterAction : Action() {
     object Inc : DuckCounterAction()
     object Dec : DuckCounterAction()
   }

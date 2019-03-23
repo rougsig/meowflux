@@ -1,13 +1,16 @@
 package com.example.test
 
 import com.example.test.generated.CatFluxState
-import com.github.rougsig.rxflux.core.*
+import com.github.rougsig.rxflux.core.Action
+import com.github.rougsig.rxflux.core.Middleware
+import com.github.rougsig.rxflux.core.createReducer
+import com.github.rougsig.rxflux.core.createStore
 import io.reactivex.observers.TestObserver
 import junit.framework.TestCase
 
 class CreateStoreTest : TestCase() {
 
-  sealed class CounterAction : Action {
+  sealed class CounterAction : Action() {
     object Inc : CounterAction()
     object Dec : CounterAction()
   }
@@ -51,12 +54,12 @@ class CreateStoreTest : TestCase() {
   }
 
   fun testStoreMiddleware() {
-    val decMiddleware: Middleware<CatFluxState> = createMiddleware { state, nextDispatcher ->
-      createDispatcher { action ->
-        if (state().counter == 1) {
-          nextDispatcher.dispatch(CounterAction.Dec)
+    val decMiddleware: Middleware<CatFluxState> = { getState, rootDispatcher ->
+      { next ->
+        { action ->
+          if (getState().counter == 1) next(CounterAction.Dec)
+          next(action)
         }
-        nextDispatcher.dispatch(action)
       }
     }
     val store = createStore(reducer, decMiddleware)

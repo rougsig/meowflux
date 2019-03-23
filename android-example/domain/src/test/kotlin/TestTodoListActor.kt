@@ -1,6 +1,9 @@
 package com.github.rougsig.rxflux.android.domain
 
-import com.github.rougsig.rxflux.android.domain.generated.TodoListFluxState
+import com.github.rougsig.rxflux.android.domain.todolist.TodoListActorAction
+import com.github.rougsig.rxflux.android.domain.todolist.createTodoListActor
+import com.github.rougsig.rxflux.android.domain.todolist.generated.TodoListFluxState
+import com.github.rougsig.rxflux.android.domain.todolist.todoListReducer
 import com.github.rougsig.rxflux.android.enitity.TodoItem
 import com.github.rougsig.rxflux.core.createStore
 import io.reactivex.observers.TestObserver

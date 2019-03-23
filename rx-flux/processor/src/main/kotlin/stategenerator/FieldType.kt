@@ -18,7 +18,9 @@ internal data class FieldType(
       val isNullable = el.getAnnotation(Nullable::class.java) != null
 
       val type = states.find { it == el.returnType.asTypeName() }?.let {
-        ClassName.bestGuess(StateType.generateStateName((it as ClassName).simpleName))
+        val className = it as ClassName
+        val p = "${it.packageName}.generated.${it.simpleName}"
+          ClassName.bestGuess(StateType.generateStateName(p))
       } ?: el.returnType.asTypeName().javaToKotlinType().copy(nullable = isNullable)
 
 

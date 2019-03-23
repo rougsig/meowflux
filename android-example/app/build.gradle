@@ -1,5 +1,6 @@
 import com.github.rougsig.ApkConfig
 import com.github.rougsig.Deps
+import com.github.rougsig.AndroidDeps
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -30,6 +31,17 @@ dependencies {
     implementation project(":android-example:domain")
 
     implementation Deps.kotlinStdLib
+
+    implementation AndroidDeps.coreLibs
+    implementation AndroidDeps.supportCoreLibs
+    implementation AndroidDeps.supportUiLibs
+    implementation AndroidDeps.epoxy
+    implementation AndroidDeps.constraintLayout
+    implementation AndroidDeps.conductorLibs
+    implementation AndroidDeps.mviLibs
+    implementation AndroidDeps.diffDispatcherAnnotations
+    implementation AndroidDeps.actionsReducerAnnotations
+    implementation AndroidDeps.actionsReducerRuntime
 
     implementation Deps.rxJava
     implementation Deps.rxRelay

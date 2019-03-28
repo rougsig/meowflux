@@ -1,10 +1,12 @@
 package com.github.rougsig.rxflux.android.domain.todolist
 
 import com.github.rougsig.rxflux.android.core.LceState
+import com.github.rougsig.rxflux.android.core.distinctFieldChanges
 import com.github.rougsig.rxflux.android.domain.todolist.generated.TodoListFluxState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
 import com.github.rougsig.rxflux.core.Action
 import com.github.rougsig.rxflux.core.createReducer
+import io.reactivex.Observable
 
 internal sealed class TodoListReducerAction : Action() {
   data class UpdateItemsState(val state: LceState<List<TodoItem>>) : TodoListReducerAction()

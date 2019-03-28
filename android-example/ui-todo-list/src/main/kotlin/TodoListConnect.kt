@@ -24,7 +24,7 @@ internal fun mapDispatchToProps(dispatcher: Dispatcher): DispatchProps {
 
 internal class TodoListConnect(sp: StateProps, dp: DispatchProps) : StateProps by sp, DispatchProps by dp
 
-internal val todoListConnect = connect(
+internal val todoListConnect: () -> TodoListConnect = connect(
   ::mapStateToProps,
   ::mapDispatchToProps,
   ::TodoListConnect

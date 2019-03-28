@@ -1,0 +1,48 @@
+import com.github.rougsig.AndroidDeps
+import com.github.rougsig.ApkConfig
+import com.github.rougsig.Deps
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion ApkConfig.COMPILE_SDK_VERSION
+    defaultConfig {
+        minSdkVersion ApkConfig.MIN_SDK_VERSION
+        targetSdkVersion ApkConfig.TARGET_SDK_VERSION
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation project(":android-example:core")
+    implementation project(":android-example:domain")
+    implementation project(":android-example:domain-todo-list")
+
+    implementation Deps.kotlinStdLib
+
+    implementation AndroidDeps.coreLibs
+    implementation AndroidDeps.supportCoreLibs
+    implementation AndroidDeps.supportUiLibs
+    implementation AndroidDeps.epoxy
+    implementation AndroidDeps.constraintLayout
+    implementation AndroidDeps.conductorLibs
+    implementation AndroidDeps.mviLibs
+    implementation AndroidDeps.diffDispatcherAnnotations
+    implementation AndroidDeps.actionsReducerAnnotations
+    implementation AndroidDeps.actionsReducerRuntime
+
+    implementation Deps.rxJava
+    implementation Deps.rxRelay
+}

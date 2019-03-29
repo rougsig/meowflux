@@ -1,6 +1,6 @@
 package com.github.rougsig.rxflux.core
 
-typealias Middleware<S> = (() -> S, Dispatcher) -> (Dispatcher) -> Dispatcher
+typealias Middleware<S> = (getState: () -> S, dispatcher: Dispatcher) -> (Dispatcher) -> Dispatcher
 
 inline fun <I : Any, O : Any> wrapMiddleware(
   crossinline middleware: Middleware<O>,

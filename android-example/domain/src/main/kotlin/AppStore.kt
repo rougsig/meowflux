@@ -2,7 +2,7 @@ package com.github.rougsig.rxflux.android.domain
 
 import com.github.rougsig.rxflux.android.core.instance
 import com.github.rougsig.rxflux.android.domain.generated.AppFluxState
-import com.github.rougsig.rxflux.android.domain.todolist.createTodoListActor
+import com.github.rougsig.rxflux.android.domain.todolist.TodoListActor
 import com.github.rougsig.rxflux.android.domain.todolist.todoListReducer
 import com.github.rougsig.rxflux.core.Dispatcher
 import com.github.rougsig.rxflux.core.connectToStore
@@ -14,7 +14,7 @@ internal val store = createStore(
   AppFluxState.combineReducers(
     todoListReducer = todoListReducer
   ),
-  wrapMiddleware(createTodoListActor(appScope.instance())) { it.todoList }
+  wrapMiddleware(appScope.instance<TodoListActor>()) { it.todoList }
 )
 
 fun <SP : Any, DP : Any, R : Any> connect(

@@ -4,12 +4,10 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 
-interface Actor<S : Any, A : Action> : Middleware<S>
-
 inline fun <S : Any, reified A : Action> createActor(
   actor: ObservableTransformer<Pair<() -> S, A>, Action>
-): Actor<S, Action> {
-  return object : Actor<S, Action> {
+): Middleware<S> {
+  return object : Middleware<S> {
     override fun invoke(getState: () -> S, dispatch: Dispatcher): (Dispatcher) -> Dispatcher {
       val relay = PublishRelay.create<Action>()
 
@@ -31,19 +29,19 @@ inline fun <S : Any, reified A : Action> createActor(
 
 inline fun <S : Any, reified A : Action> createConcatActor(
   crossinline actor: (state: S, action: A) -> Observable<Action>
-): Actor<S, Action> {
+): Middleware<S> {
   return createActor<S, A>(ObservableTransformer { it.concatMap { (s, a) -> actor(s(), a) } })
 }
 
 inline fun <S : Any, reified A : Action> createFlatActor(
   crossinline actor: (state: S, action: A) -> Observable<Action>
-): Actor<S, Action> {
+): Middleware<S> {
   return createActor<S, A>(ObservableTransformer { it.flatMap { (s, a) -> actor(s(), a) } })
 }
 
 inline fun <S : Any, reified A : Action> createSwitchActor(
   crossinline actor: (state: S, action: A) -> Observable<Action>
-): Actor<S, Action> {
+): Middleware<S> {
   return createActor<S, A>(ObservableTransformer { it.switchMap { (s, a) -> actor(s(), a) } })
 }
 

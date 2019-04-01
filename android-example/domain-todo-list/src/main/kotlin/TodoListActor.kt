@@ -8,7 +8,7 @@ import com.github.rougsig.rxflux.core.Middleware
 import com.github.rougsig.rxflux.core.createSwitchActor
 import javax.inject.Inject
 
-internal sealed class TodoListActorAction : Action() {
+sealed class TodoListActorAction : Action() {
   object LoadTodoList : TodoListActorAction()
   data class AddTodoItem(val text: String) : TodoListActorAction()
   data class RemoveTodoItem(val id: Long) : TodoListActorAction()
@@ -35,7 +35,3 @@ class TodoListActor @Inject constructor(repository: TodoListRepository) : Middle
     }
   }
 }()
-
-fun loadTodoListAction(): Action = TodoListActorAction.LoadTodoList
-fun addTodoItemAction(text: String): Action = TodoListActorAction.AddTodoItem(text)
-fun removeTodoItemAction(id: Long): Action = TodoListActorAction.RemoveTodoItem(id)

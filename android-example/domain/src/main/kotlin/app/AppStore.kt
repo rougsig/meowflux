@@ -1,18 +1,18 @@
-package com.github.rougsig.rxflux.android.domain
+package com.github.rougsig.rxflux.android.domain.app
 
 import com.github.rougsig.rxflux.android.core.instance
-import com.github.rougsig.rxflux.android.domain.generated.AppFluxState
+import com.github.rougsig.rxflux.android.domain.app.generated.AppFluxState
 import com.github.rougsig.rxflux.android.domain.todolist.TodoListActor
-import com.github.rougsig.rxflux.android.domain.todolist.todoListReducer
+import com.github.rougsig.rxflux.android.domain.todolist.TodoListReducer
 import com.github.rougsig.rxflux.core.Dispatcher
 import com.github.rougsig.rxflux.core.connectToStore
 import com.github.rougsig.rxflux.core.createStore
 import com.github.rougsig.rxflux.core.wrapMiddleware
 import io.reactivex.Observable
 
-internal val store = createStore(
+private val store = createStore(
   AppFluxState.combineReducers(
-    todoListReducer = todoListReducer
+    todoListReducer = appScope.instance<TodoListReducer>()
   ),
   wrapMiddleware(appScope.instance<TodoListActor>()) { it.todoList }
 )

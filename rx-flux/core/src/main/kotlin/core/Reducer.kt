@@ -15,3 +15,12 @@ inline fun <S, reified A : Action> createReducer(
     }
   }
 }
+
+inline fun <S, reified A : Action> combineReducers(
+  initialState: S,
+  vararg reducer: (S, A) -> S
+): Reducer<S, A> {
+  return createReducer<S, A>(initialState) { ps, a ->
+    reducer.fold(ps) { s, r -> r.invoke(s, a) }
+  }
+}

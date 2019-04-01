@@ -2,7 +2,7 @@ package com.github.rougsig.rxflux.android.repository
 
 import toothpick.config.Module
 
-class TodoListModule : Module() {
+class TodoListRepositoryModule : Module() {
   init {
     this
       .bind(TodoListRepository::class.java)

@@ -1,12 +1,11 @@
 package com.github.rougsig.rxflux.android.domain.todolist
 
 import com.github.rougsig.rxflux.android.core.LceState
-import com.github.rougsig.rxflux.android.core.distinctFieldChanges
 import com.github.rougsig.rxflux.android.domain.todolist.generated.TodoListFluxState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
 import com.github.rougsig.rxflux.core.Action
+import com.github.rougsig.rxflux.core.Reducer
 import com.github.rougsig.rxflux.core.createReducer
-import io.reactivex.Observable
 
 internal sealed class TodoListReducerAction : Action() {
   data class UpdateItemsState(val state: LceState<List<TodoItem>>) : TodoListReducerAction()
@@ -14,17 +13,21 @@ internal sealed class TodoListReducerAction : Action() {
   data class UpdateRemoveItemState(val state: LceState<Unit>) : TodoListReducerAction()
 }
 
-val todoListReducer = createReducer(TodoListFluxState(
-  todoListItems = null,
-  addTodoItem = null,
-  removeTodoItem = null
-)) { s: TodoListFluxState, a: TodoListReducerAction ->
-  when (a) {
-    is TodoListReducerAction.UpdateItemsState ->
-      s.setTodoListItems(a.state)
-    is TodoListReducerAction.UpdateAddItemState ->
-      s.setAddTodoItem(a.state)
-    is TodoListReducerAction.UpdateRemoveItemState ->
-      s.setRemoveTodoItem(a.state)
+class TodoListReducer : Reducer<TodoListFluxState, Action> by {
+  createReducer<TodoListFluxState, TodoListReducerAction>(
+    TodoListFluxState(
+      todoListItems = null,
+      addTodoItem = null,
+      removeTodoItem = null
+    )
+  ) { s, a ->
+    when (a) {
+      is TodoListReducerAction.UpdateItemsState ->
+        s.setTodoListItems(a.state)
+      is TodoListReducerAction.UpdateAddItemState ->
+        s.setAddTodoItem(a.state)
+      is TodoListReducerAction.UpdateRemoveItemState ->
+        s.setRemoveTodoItem(a.state)
+    }
   }
-}
+}()

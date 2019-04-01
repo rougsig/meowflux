@@ -56,12 +56,3 @@ fun <S : Any> createStore(
     }
   }
 }
-
-fun <SP: Any, DP: Any, R: Any, S: Any> connectToStore(
-  store: Store<S>,
-  mapStateToProps: (state: Observable<S>) -> SP,
-  mapDispatchToProps: (dispatcher: Dispatcher) -> DP,
-  constructor: (SP, DP) -> R
-): () -> R {
-  return { constructor(mapStateToProps(store.stateLive), mapDispatchToProps(store::dispatch)) }
-}

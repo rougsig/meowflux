@@ -1,26 +1,27 @@
 package com.github.rougsig.rxflux.android.domain.app
 
-import com.github.rougsig.rxflux.android.core.instance
 import com.github.rougsig.rxflux.android.domain.app.generated.AppFluxState
-import com.github.rougsig.rxflux.android.domain.todolist.TodoListActor
-import com.github.rougsig.rxflux.android.domain.todolist.TodoListReducer
-import com.github.rougsig.rxflux.core.Dispatcher
-import com.github.rougsig.rxflux.core.connectToStore
-import com.github.rougsig.rxflux.core.createStore
-import com.github.rougsig.rxflux.core.wrapMiddleware
-import io.reactivex.Observable
+import com.github.rougsig.rxflux.android.domain.todolist.generated.TodoListFluxState
+import com.github.rougsig.rxflux.core.*
+import toothpick.config.Module
+import javax.inject.Inject
 
-private val store = createStore(
-  AppFluxState.combineReducers(
-    todoListReducer = appScope.instance<TodoListReducer>()
-  ),
-  wrapMiddleware(appScope.instance<TodoListActor>()) { it.todoList }
-)
+internal class AppStore @Inject constructor(
+  private val todoListReducer: Reducer<TodoListFluxState, Action>,
+  private val todoListActor: Middleware<TodoListFluxState>
+) : Store<AppFluxState> by {
+  createStore(
+    AppFluxState.combineReducers(
+      todoListReducer = todoListReducer
+    ),
+    wrapMiddleware(todoListActor) { it.todoList }
+  )
+}()
 
-fun <SP : Any, DP : Any, R : Any> connect(
-  mapStateToProps: (state: Observable<AppFluxState>) -> SP,
-  mapDispatchToProps: (dispatcher: Dispatcher) -> DP,
-  constructor: (SP, DP) -> R
-): () -> R {
-  return connectToStore(store, mapStateToProps, mapDispatchToProps, constructor)
+internal class StoreModule : Module() {
+  init {
+    this
+      .bind(AppStore::class.java)
+      .singletonInScope()
+  }
 }

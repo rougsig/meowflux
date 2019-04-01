@@ -8,6 +8,7 @@ import com.example.test.generated.DuckFluxState
 import com.github.rougsig.rxflux.core.Action
 import com.github.rougsig.rxflux.core.combineReducers
 import com.github.rougsig.rxflux.core.createReducer
+import com.github.rougsig.rxflux.core.wrapReducer
 import junit.framework.TestCase
 
 class CombineReducersTest : TestCase() {
@@ -58,18 +59,20 @@ class CombineReducersTest : TestCase() {
   }
 
   fun testCombineReducers() {
-    val catReducer = { ps: AnimalFluxState, a: AnimalAction ->
-      val s = ps.catState
-      val ns = when (a) {
+    val catReducer = { s: CatFluxState, a: CatCounterAction ->
+      when (a) {
         CatCounterAction.Inc ->
           s.setCounter(s.counter + 1)
         CatCounterAction.Dec ->
           s.setCounter(s.counter - 1)
-        else ->
-          s
       }
-      ps.setCatState(ns)
     }
+
+    val wrappedCatReducer = wrapReducer<AnimalFluxState, AnimalAction, CatFluxState, CatCounterAction>(
+      reducer = catReducer,
+      mapChildState = { s: AnimalFluxState -> s.catState },
+      mapParentState = { s: AnimalFluxState, cs: CatFluxState -> s.setCatState(cs) }
+    )
 
     val duckReducer = { ps: AnimalFluxState, a: AnimalAction ->
       val s = ps.duckState
@@ -84,9 +87,9 @@ class CombineReducersTest : TestCase() {
       ps.setDuckState(ns)
     }
 
-    val animalReducer = combineReducers<AnimalFluxState, AnimalAction>(
+    val animalReducer = combineReducers(
       AnimalFluxState(DuckFluxState(0), CatFluxState(0)),
-      catReducer,
+      wrappedCatReducer,
       duckReducer
     )
 

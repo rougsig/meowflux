@@ -1,4 +1,3 @@
 package com.github.rougsig.rxflux.core
 
-typealias Dispatcher = (Action) -> Unit
-
+typealias Dispatcher = (action: Action) -> Unit

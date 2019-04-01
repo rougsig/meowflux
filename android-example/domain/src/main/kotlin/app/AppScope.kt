@@ -7,4 +7,6 @@ import toothpick.Toothpick
 internal val appScope = Toothpick.openScope("APP_SCOPE").apply {
   installModules(TodoListRepositoryModule())
   installModules(TodoListFluxModule())
+
+  installModules(StoreModule())
 }

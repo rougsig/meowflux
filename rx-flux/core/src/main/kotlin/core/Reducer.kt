@@ -24,3 +24,17 @@ inline fun <S, reified A : Action> combineReducers(
     reducer.fold(ps) { s, r -> r.invoke(s, a) }
   }
 }
+
+inline fun <IS, IA : Action, OS, reified OA : Action> wrapReducer(
+  crossinline reducer: (OS, OA) -> OS,
+  crossinline mapChildState: (IS) -> OS,
+  crossinline mapParentState: (IS, OS) -> IS
+): (IS, IA) -> IS {
+  return { s: IS, a: IA ->
+    if (a is OA) {
+      mapParentState(s, reducer.invoke(mapChildState(s), a))
+    } else {
+      s
+    }
+  }
+}

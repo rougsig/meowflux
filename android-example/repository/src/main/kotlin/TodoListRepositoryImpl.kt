@@ -5,8 +5,9 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-internal class TodoListRepositoryImpl : TodoListRepository {
+internal class TodoListRepositoryImpl @Inject constructor() : TodoListRepository {
   private val todoList = CopyOnWriteArrayList<TodoItem>()
 
   init {

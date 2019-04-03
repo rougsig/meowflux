@@ -1,14 +1,16 @@
 package com.github.rougsig.rxflux.android.domain.app
 
 import com.github.rougsig.rxflux.android.domain.app.generated.AppFluxState
-import com.github.rougsig.rxflux.android.domain.todolist.generated.TodoListFluxState
-import com.github.rougsig.rxflux.core.*
-import toothpick.config.Module
+import com.github.rougsig.rxflux.android.domain.todolist.TodoListActor
+import com.github.rougsig.rxflux.android.domain.todolist.TodoListReducer
+import com.github.rougsig.rxflux.core.Store
+import com.github.rougsig.rxflux.core.createStore
+import com.github.rougsig.rxflux.core.wrapMiddleware
 import javax.inject.Inject
 
 internal class AppStore @Inject constructor(
-  private val todoListReducer: Reducer<TodoListFluxState, Action>,
-  private val todoListActor: Middleware<TodoListFluxState>
+  private val todoListReducer: TodoListReducer,
+  private val todoListActor: TodoListActor
 ) : Store<AppFluxState> by {
   createStore(
     AppFluxState.combineReducers(
@@ -17,11 +19,3 @@ internal class AppStore @Inject constructor(
     wrapMiddleware(todoListActor) { it.todoList }
   )
 }()
-
-internal class StoreModule : Module() {
-  init {
-    this
-      .bind(AppStore::class.java)
-      .singletonInScope()
-  }
-}

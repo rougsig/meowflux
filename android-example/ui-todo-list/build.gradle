@@ -45,4 +45,6 @@ dependencies {
 
     implementation Deps.rxJava
     implementation Deps.rxRelay
+
+    kapt AndroidDeps.toothpickProcessor
 }

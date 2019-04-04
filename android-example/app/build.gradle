@@ -26,6 +26,11 @@ android {
     }
 }
 
+androidExtensions {
+    experimental = true
+    defaultCacheImplementation = "SPARSE_ARRAY"
+}
+
 dependencies {
     implementation project(":android-example:core")
     implementation project(":android-example:ui-core")

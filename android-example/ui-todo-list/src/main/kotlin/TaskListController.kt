@@ -1,28 +1,42 @@
 package com.github.rougsig.rxflux.android.ui.todolist
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.bluelinelabs.conductor.Controller
-import com.github.rougsig.rxflux.android.core.APP_SCOPE_NAME
+import com.github.rougsig.rxflux.android.core.LceState
 import com.github.rougsig.rxflux.android.core.instance
-import com.github.rougsig.rxflux.android.ui.todolist.di.DispatchProps
-import com.github.rougsig.rxflux.android.ui.todolist.di.StateProps
-import com.github.rougsig.rxflux.android.ui.todolist.di.TodoListConnectModule
-import toothpick.Toothpick
+import com.github.rougsig.rxflux.android.enitity.TodoItem
+import com.github.rougsig.rxflux.android.ui.core.ScopedMviController
+import com.github.rougsig.rxflux.android.ui.todolist.di.ConnectModule
+import kotlinx.android.synthetic.main.task_list_controller.*
 
-class TaskListController : Controller() {
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-    return inflater.inflate(R.layout.task_list_controller, container, false)
+fun createTaskListController(): Controller = TaskListController()
+
+internal class TaskListController :
+  ScopedMviController<TaskListScreen.ViewState, TaskListScreen.View, TaskListPresenter>(),
+  TaskListScreen.Renderer,
+  TaskListScreen.View {
+  private val epoxyController = TaskListEpoxyController()
+
+  override fun createScopedConfig() = object : ScopedMviController.Config<TaskListScreen.ViewState> {
+    override val viewLayoutResource = R.layout.task_list_controller
+    override val diffDispatcher = ViewStateDiffDispatcher.Builder().target(this@TaskListController).build()
+    override val presenterClass = TaskListPresenter::class.java
+    override fun screenModules() = listOf(ConnectModule())
   }
 
-  init {
-    val screenScope = Toothpick.openScopes(APP_SCOPE_NAME, this.javaClass.simpleName)
-    screenScope.installModules(TodoListConnectModule())
+  override fun initializeView(rootView: View) {
+    task_list_recycler.setController(epoxyController)
+  }
 
-    val dispatchProps: DispatchProps = screenScope.instance()
-    val stateProps: StateProps = screenScope.instance()
+  override fun renderTodoList(state: LceState<List<TodoItem>>) {
+    task_list_loading.isVisible = state.isLoading
+    if (state.isContent) {
+      epoxyController.setData(state.asContent())
+    }
+  }
 
-    println("initialized: $dispatchProps, $stateProps")
+  override fun createPresenter(): TaskListPresenter {
+    return screenScope.instance()
   }
 }

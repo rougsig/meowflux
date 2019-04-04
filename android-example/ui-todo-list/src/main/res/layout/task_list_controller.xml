@@ -3,7 +3,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <androidx.recyclerview.widget.RecyclerView
+  <com.airbnb.epoxy.EpoxyRecyclerView
     android:id="@+id/task_list_recycler"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

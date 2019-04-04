@@ -25,6 +25,11 @@ android {
     }
 }
 
+androidExtensions {
+    experimental = true
+    defaultCacheImplementation = "SPARSE_ARRAY"
+}
+
 dependencies {
     implementation project(":android-example:core")
     implementation project(":android-example:ui-core")
@@ -32,4 +37,7 @@ dependencies {
     implementation project(":android-example:domain-todo-list")
 
     kapt AndroidDeps.toothpickProcessor
+    kapt AndroidDeps.epoxyProcessor
+    kapt AndroidDeps.diffDispatcherProcessor
+    kapt AndroidDeps.actionsReducerProcessor
 }

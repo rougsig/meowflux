@@ -2,7 +2,7 @@ package com.github.rougsig.rxflux.android.ui.todolist.di
 
 import toothpick.config.Module
 
-internal class TodoListConnectModule : Module() {
+internal class ConnectModule : Module() {
   init {
     this
       .bind(StateProps::class.java)

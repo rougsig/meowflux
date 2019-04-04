@@ -6,12 +6,10 @@ import com.github.rougsig.rxflux.android.domain.app.generated.AppFluxState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
 import io.reactivex.Observable
 
-val Observable<AppFluxState>.todoList: Observable<List<TodoItem>>
+val Observable<AppFluxState>.todoList: Observable<LceState<List<TodoItem>>>
   get() {
     return this
       .distinctFieldChanges { it.todoList.todoListItems }
-      .filter { it.isContent }
-      .map { it.asContent() }
   }
 
 val Observable<AppFluxState>.addTodoItem: Observable<LceState<Unit>>

@@ -1,5 +1,6 @@
 package com.github.rougsig.rxflux.android.ui.todolist.di
 
+import com.github.rougsig.rxflux.android.core.LceState
 import com.github.rougsig.rxflux.android.domain.app.generated.AppFluxState
 import com.github.rougsig.rxflux.android.domain.todolist.todoList
 import com.github.rougsig.rxflux.android.enitity.TodoItem
@@ -8,7 +9,7 @@ import io.reactivex.Observable
 import javax.inject.Inject
 
 internal interface StateProps {
-  val todoList: Observable<List<TodoItem>>
+  val todoList: Observable<LceState<List<TodoItem>>>
 }
 
 internal class StatePropsImpl @Inject constructor(

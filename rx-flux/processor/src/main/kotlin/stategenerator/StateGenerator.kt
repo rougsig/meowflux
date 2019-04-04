@@ -16,6 +16,7 @@ internal class StateGenerator : Generator<StateType> {
     return FileSpec
       .builder(type.packageName, type.stateType.name)
       .addImport(KOTLINX_IMMUTABLE, IMMUTABLE_HASH_MAP_OF)
+      .addImport(RXFLUX_CORE, RXFLUX_CORE_REDUCER)
       .addType(TypeSpec
         .classBuilder(type.stateType.name)
         .addConstructor(type.fields)
@@ -129,7 +130,7 @@ internal class StateGenerator : Generator<StateType> {
           .addCode(CodeBlock
             .builder()
             .add("return ")
-            .addStatement("{ s: ${stateType.name}?, action: %T ->", ACTION_CLASS_NAME)
+            .addStatement("createReducer<${stateType.name}> { s: ${stateType.name}?, action: %T ->", ACTION_CLASS_NAME)
             .addStatement("val state = s ?: %L(%L = %L())",
               stateType, MAP_FIELD_NAME, IMMUTABLE_HASH_MAP_OF)
             .apply {
@@ -137,7 +138,7 @@ internal class StateGenerator : Generator<StateType> {
                 val reducerName = "${field.name.beginWithLowerCase()}Reducer"
                 addStatement("val %LOld = state.%L[%S] as? %T",
                   field.name, MAP_FIELD_NAME, field.name, field.type)
-                addStatement("val %LNew = %L.invoke(%LOld, action)",
+                addStatement("val %LNew = %L.reduce(%LOld, action)",
                   field.name, reducerName, field.name)
               }
             }

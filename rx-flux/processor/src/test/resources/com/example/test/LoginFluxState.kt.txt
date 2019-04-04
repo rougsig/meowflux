@@ -3,6 +3,7 @@ package com.example.test.generated
 import com.example.test.Phone
 import com.github.rougsig.rxflux.core.Action
 import com.github.rougsig.rxflux.core.Reducer
+import com.github.rougsig.rxflux.core.createReducer
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -36,13 +37,13 @@ class LoginFluxState private constructor(private val map: ImmutableMap<Any, Any?
 
     companion object {
         fun combineReducers(phoneReducer: Reducer<Phone<Int, Long, Unit>, Action>,
-                passwordReducer: Reducer<String?, Action>): Reducer<LoginFluxState, Action> = { s:
-                LoginFluxState?, action: Action ->
+                passwordReducer: Reducer<String?, Action>): Reducer<LoginFluxState, Action> =
+                createReducer<LoginFluxState> { s: LoginFluxState?, action: Action ->
         val state = s ?: LoginFluxState(map = immutableHashMapOf())
         val phoneOld = state.map["phone"] as? Phone<Int, Long, Unit>
-        val phoneNew = phoneReducer.invoke(phoneOld, action)
+        val phoneNew = phoneReducer.reduce(phoneOld, action)
         val passwordOld = state.map["password"] as? String?
-        val passwordNew = passwordReducer.invoke(passwordOld, action)
+        val passwordNew = passwordReducer.reduce(passwordOld, action)
         state.let { if (phoneOld !== phoneNew) it.setPhone(phoneNew) else it }
         .let { if (passwordOld !== passwordNew) it.setPassword(passwordNew) else it }
         }

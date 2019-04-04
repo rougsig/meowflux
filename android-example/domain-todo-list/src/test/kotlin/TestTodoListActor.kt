@@ -10,7 +10,7 @@ import junit.framework.TestCase
 class TestTodoListActor : TestCase() {
 
   fun testLoadTodoList() {
-    val store = createStore(todoListReducer, createTodoListActor(TestTodoListRepository()))
+    val store = createStore(TodoListReducer(), TodoListActor(TestTodoListRepository()))
 
     val observer = TestObserver<TodoListFluxState>()
     store.stateLive.subscribe(observer)
@@ -26,12 +26,12 @@ class TestTodoListActor : TestCase() {
           removeTodoItem = null
         ),
         TodoListFluxState(
-          todoListItems = LceState.Content(listOf(
-            TodoItem(
-              id = 1L,
-              text = "TodoItem 1"
-            )
-          )),
+          todoListItems = LceState.Content(
+            listOf(TodoItem(
+                id = 1L,
+                text = "TodoItem 1"
+              ))
+          ),
           addTodoItem = null,
           removeTodoItem = null
         )
@@ -39,7 +39,7 @@ class TestTodoListActor : TestCase() {
   }
 
   fun testAddTodoItem() {
-    val store = createStore(todoListReducer, createTodoListActor(TestTodoListRepository()))
+    val store = createStore(TodoListReducer(), TodoListActor(TestTodoListRepository()))
 
     val observer = TestObserver<TodoListFluxState>()
     store.stateLive.subscribe(observer)
@@ -65,16 +65,16 @@ class TestTodoListActor : TestCase() {
           removeTodoItem = null
         ),
         TodoListFluxState(
-          todoListItems = LceState.Content(listOf(
-            TodoItem(
-              id = 1L,
-              text = "TodoItem 1"
-            ),
-            TodoItem(
-              id = 2L,
-              text = "Hello World"
-            )
-          )),
+          todoListItems = LceState.Content(
+            listOf(TodoItem(
+                id = 1L,
+                text = "TodoItem 1"
+              ),
+              TodoItem(
+                id = 2L,
+                text = "Hello World"
+              ))
+          ),
           addTodoItem = LceState.Content(Unit),
           removeTodoItem = null
         )
@@ -82,7 +82,7 @@ class TestTodoListActor : TestCase() {
   }
 
   fun testRemoveTodoItem() {
-    val store = createStore(todoListReducer, createTodoListActor(TestTodoListRepository()))
+    val store = createStore(TodoListReducer(), TodoListActor(TestTodoListRepository()))
 
     val observer = TestObserver<TodoListFluxState>()
     store.stateLive.subscribe(observer)

@@ -2,6 +2,7 @@ package com.example.test.generated
 
 import com.github.rougsig.rxflux.core.Action
 import com.github.rougsig.rxflux.core.Reducer
+import com.github.rougsig.rxflux.core.createReducer
 import kotlin.Any
 import kotlin.Boolean
 import kotlinx.collections.immutable.ImmutableMap
@@ -32,12 +33,12 @@ class AnimalFluxState private constructor(private val map: ImmutableMap<Any, Any
     companion object {
         fun combineReducers(duckStateReducer: Reducer<DuckFluxState, Action>,
                 catStateReducer: Reducer<CatFluxState, Action>): Reducer<AnimalFluxState, Action> =
-                { s: AnimalFluxState?, action: Action ->
+                createReducer<AnimalFluxState> { s: AnimalFluxState?, action: Action ->
         val state = s ?: AnimalFluxState(map = immutableHashMapOf())
         val duckStateOld = state.map["duckState"] as? DuckFluxState
-        val duckStateNew = duckStateReducer.invoke(duckStateOld, action)
+        val duckStateNew = duckStateReducer.reduce(duckStateOld, action)
         val catStateOld = state.map["catState"] as? CatFluxState
-        val catStateNew = catStateReducer.invoke(catStateOld, action)
+        val catStateNew = catStateReducer.reduce(catStateOld, action)
         state.let { if (duckStateOld !== duckStateNew) it.setDuckState(duckStateNew) else it }
         .let { if (catStateOld !== catStateNew) it.setCatState(catStateNew) else it }
         }

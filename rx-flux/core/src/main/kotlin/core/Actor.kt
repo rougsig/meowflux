@@ -7,21 +7,19 @@ import io.reactivex.ObservableTransformer
 inline fun <S : Any, reified A : Action> createActor(
   actor: ObservableTransformer<Pair<() -> S, A>, Action>
 ): Middleware<S> {
-  return object : Middleware<S> {
-    override fun invoke(getState: () -> S, dispatch: Dispatcher): (Dispatcher) -> Dispatcher {
-      val relay = PublishRelay.create<Action>()
+  return createMiddleware { getState, dispatcher ->
+    val relay = PublishRelay.create<Action>()
 
-      relay
-        .ofType(A::class.java)
-        .map { getState to it }
-        .compose(actor)
-        .subscribe(dispatch)
+    relay
+      .ofType(A::class.java)
+      .map { getState to it }
+      .compose(actor)
+      .subscribe(dispatcher::dispatch)
 
-      return { next ->
-        { action ->
-          relay.accept(action)
-          next(action)
-        }
+    return@createMiddleware { next ->
+      createDispatcher { action ->
+        relay.accept(action)
+        next.dispatch(action)
       }
     }
   }

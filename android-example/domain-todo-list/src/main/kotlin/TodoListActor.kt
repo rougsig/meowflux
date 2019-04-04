@@ -4,7 +4,6 @@ import com.github.rougsig.rxflux.android.core.toLceEventObservable
 import com.github.rougsig.rxflux.android.domain.todolist.generated.TodoListFluxState
 import com.github.rougsig.rxflux.android.repository.TodoListRepository
 import com.github.rougsig.rxflux.core.Action
-import com.github.rougsig.rxflux.core.Dispatcher
 import com.github.rougsig.rxflux.core.Middleware
 import com.github.rougsig.rxflux.core.createSwitchActor
 import javax.inject.Inject
@@ -15,8 +14,8 @@ sealed class TodoListActorAction : Action() {
   data class RemoveTodoItem(val id: Long) : TodoListActorAction()
 }
 
-class TodoListActor @Inject constructor(repository: TodoListRepository) : Middleware<TodoListFluxState> {
-  private val actor = createSwitchActor<TodoListFluxState, TodoListActorAction> { state, action ->
+class TodoListActor @Inject constructor(repository: TodoListRepository) : Middleware<TodoListFluxState> by {
+  createSwitchActor<TodoListFluxState, TodoListActorAction> { state, action ->
     when (action) {
       is TodoListActorAction.LoadTodoList ->
         repository.getTodoList()
@@ -35,8 +34,4 @@ class TodoListActor @Inject constructor(repository: TodoListRepository) : Middle
           )
     }
   }
-
-  override fun invoke(getState: () -> TodoListFluxState, dispatcher: Dispatcher): (Dispatcher) -> Dispatcher {
-    return actor(getState, dispatcher)
-  }
-}
+}()

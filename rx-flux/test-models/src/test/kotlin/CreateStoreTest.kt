@@ -1,10 +1,7 @@
 package com.example.test
 
 import com.example.test.generated.CatFluxState
-import com.github.rougsig.rxflux.core.Action
-import com.github.rougsig.rxflux.core.Middleware
-import com.github.rougsig.rxflux.core.createReducer
-import com.github.rougsig.rxflux.core.createStore
+import com.github.rougsig.rxflux.core.*
 import io.reactivex.observers.TestObserver
 import junit.framework.TestCase
 
@@ -15,7 +12,7 @@ class CreateStoreTest : TestCase() {
     object Dec : CounterAction()
   }
 
-  private val reducer = createReducer(CatFluxState(0)) { s: CatFluxState, a: CounterAction ->
+  private val reducer = safeReducer(CatFluxState(0)) { s: CatFluxState, a: CounterAction ->
     when (a) {
       CounterAction.Inc ->
         s.setCounter(s.counter + 1)
@@ -54,11 +51,11 @@ class CreateStoreTest : TestCase() {
   }
 
   fun testStoreMiddleware() {
-    val decMiddleware: Middleware<CatFluxState> = { getState, rootDispatcher ->
+    val decMiddleware: Middleware<CatFluxState> = createMiddleware { getState, _ ->
       { next ->
-        { action ->
-          if (getState().counter == 1) next(CounterAction.Dec)
-          next(action)
+        createDispatcher { action ->
+          if (getState().counter == 1) next.dispatch(CounterAction.Dec)
+          next.dispatch(action)
         }
       }
     }

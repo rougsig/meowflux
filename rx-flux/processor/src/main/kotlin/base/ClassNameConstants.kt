@@ -10,7 +10,7 @@ import kotlinx.collections.immutable.ImmutableMap
 internal val IMMUTABLE_MAP_CLASS_NAME = ImmutableMap::class.asClassName()
 internal const val KOTLINX_IMMUTABLE = "kotlinx.collections.immutable"
 internal const val RXFLUX_CORE = "com.github.rougsig.rxflux.core"
-internal const val RXFLUX_CORE_REDUCER = "Reducer"
+internal const val RXFLUX_CORE_REDUCER = "createReducer"
 
 internal const val IMMUTABLE_HASH_MAP_OF = "immutableHashMapOf"
 internal fun createParameterizedImmutableMap(key: TypeName, value: TypeName): TypeName {

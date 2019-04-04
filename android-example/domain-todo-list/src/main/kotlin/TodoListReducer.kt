@@ -5,7 +5,7 @@ import com.github.rougsig.rxflux.android.domain.todolist.generated.TodoListFluxS
 import com.github.rougsig.rxflux.android.enitity.TodoItem
 import com.github.rougsig.rxflux.core.Action
 import com.github.rougsig.rxflux.core.Reducer
-import com.github.rougsig.rxflux.core.createReducer
+import com.github.rougsig.rxflux.core.safeReducer
 import javax.inject.Inject
 
 internal sealed class TodoListReducerAction : Action() {
@@ -14,8 +14,8 @@ internal sealed class TodoListReducerAction : Action() {
   data class UpdateRemoveItemState(val state: LceState<Unit>) : TodoListReducerAction()
 }
 
-class TodoListReducer @Inject constructor() : Reducer<TodoListFluxState, Action> {
-  private val reducer = createReducer<TodoListFluxState, TodoListReducerAction>(
+class TodoListReducer @Inject constructor() : Reducer<TodoListFluxState, Action> by {
+  safeReducer<TodoListFluxState, TodoListReducerAction>(
     TodoListFluxState(
       todoListItems = null,
       addTodoItem = null,
@@ -31,8 +31,4 @@ class TodoListReducer @Inject constructor() : Reducer<TodoListFluxState, Action>
         s.setRemoveTodoItem(a.state)
     }
   }
-
-  override fun invoke(state: TodoListFluxState?, action: Action): TodoListFluxState {
-    return reducer.invoke(state, action)
-  }
-}
+}()

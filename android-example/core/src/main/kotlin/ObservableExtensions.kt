@@ -20,3 +20,8 @@ fun <T> Observable<T>.toLceEventObservable(
     .onErrorReturn { stateCreator(LceState.Error(it.localizedMessage)) }
     .startWith(stateCreator(LceState.Loading()))
 }
+
+fun <T> Observable<T>.skipFirstIf(value: Boolean): Observable<T> {
+  return if (value) this.skip(1) else this
+}
+

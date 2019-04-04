@@ -18,7 +18,7 @@ class FluxApplication : Application() {
     configureLogging()
 
     val appScope = Toothpick.openScope(APP_SCOPE_NAME)
-    appScope.installModules(StoreModule())
+    appScope.installModules(StoreModule(), AppModule(this))
   }
 
   private fun configureRxAndroid() {

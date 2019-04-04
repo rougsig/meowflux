@@ -6,19 +6,22 @@ import com.github.rougsig.rxflux.android.domain.app.generated.AppFluxState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
 import io.reactivex.Observable
 
-fun getTodoListChanges(stateLive: Observable<AppFluxState>): Observable<List<TodoItem>> {
-  return stateLive
-    .distinctFieldChanges { it.todoList.todoListItems }
-    .filter { it.isContent }
-    .map { it.asContent() }
-}
+val Observable<AppFluxState>.todoList: Observable<List<TodoItem>>
+  get() {
+    return this
+      .distinctFieldChanges { it.todoList.todoListItems }
+      .filter { it.isContent }
+      .map { it.asContent() }
+  }
 
-fun addTodoItemChanges(stateLive: Observable<AppFluxState>): Observable<LceState<Unit>> {
-  return stateLive
-    .distinctFieldChanges { it.todoList.addTodoItem }
-}
+val Observable<AppFluxState>.addTodoItem: Observable<LceState<Unit>>
+  get() {
+    return this
+      .distinctFieldChanges { it.todoList.addTodoItem }
+  }
 
-fun removeTodoItemChanges(stateLive: Observable<AppFluxState>): Observable<LceState<Unit>> {
-  return stateLive
-    .distinctFieldChanges { it.todoList.removeTodoItem }
-}
+val Observable<AppFluxState>.removeTodoItem: Observable<LceState<Unit>>
+  get() {
+    return this
+      .distinctFieldChanges { it.todoList.removeTodoItem }
+  }

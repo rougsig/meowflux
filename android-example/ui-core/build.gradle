@@ -25,11 +25,26 @@ android {
     }
 }
 
+androidExtensions {
+    experimental = true
+    defaultCacheImplementation = "SPARSE_ARRAY"
+}
+
 dependencies {
     implementation project(":android-example:core")
-    implementation project(":android-example:ui-core")
-    implementation project(":android-example:domain")
-    implementation project(":android-example:domain-todo-list")
+
+    implementation Deps.kotlinStdLib
+
+    api AndroidDeps.coreLibs
+    api AndroidDeps.supportCoreLibs
+    api AndroidDeps.supportUiLibs
+    api AndroidDeps.epoxy
+    api AndroidDeps.constraintLayout
+    api AndroidDeps.conductorLibs
+    api AndroidDeps.mviLibs
+    api AndroidDeps.diffDispatcherAnnotations
+    api AndroidDeps.actionsReducerAnnotations
+    api AndroidDeps.actionsReducerRuntime
 
     kapt AndroidDeps.toothpickProcessor
 }

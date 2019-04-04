@@ -8,4 +8,5 @@ include ':rx-flux:processor',
         ":android-example:domain-todo-list",
         ":android-example:repository",
         ":android-example:entity",
-        ":android-example:core"
+        ":android-example:core",
+        ":android-example:ui-core"

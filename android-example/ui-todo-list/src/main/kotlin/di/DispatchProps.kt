@@ -2,7 +2,7 @@ package com.github.rougsig.rxflux.android.ui.todolist.di
 
 import com.github.rougsig.rxflux.android.domain.app.generated.AppFluxState
 import com.github.rougsig.rxflux.android.domain.todolist.loadTodoListAction
-import com.github.rougsig.rxflux.core.Store
+import com.github.rougsig.rxflux.core.store.Store
 import javax.inject.Inject
 
 internal interface DispatchProps {

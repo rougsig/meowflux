@@ -130,7 +130,7 @@ internal class StateGenerator : Generator<StateType> {
           .addCode(CodeBlock
             .builder()
             .add("return ")
-            .addStatement("createReducer<${stateType.name}> { s: ${stateType.name}?, action: %T ->", ACTION_CLASS_NAME)
+            .addStatement("Reducer<${stateType.name}> { s: ${stateType.name}?, action: %T ->", ACTION_CLASS_NAME)
             .addStatement("val state = s ?: %L(%L = %L())",
               stateType, MAP_FIELD_NAME, IMMUTABLE_HASH_MAP_OF)
             .apply {

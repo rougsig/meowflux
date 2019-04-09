@@ -1,6 +1,6 @@
 package com.github.rougsig.rxflux.android.core
 
-import com.github.rougsig.rxflux.core.Action
+import com.github.rougsig.rxflux.core.action.Action
 import io.reactivex.Observable
 
 inline fun <T, F> Observable<T>.distinctFieldChanges(crossinline fieldSelector: (T) -> F?): Observable<F> {

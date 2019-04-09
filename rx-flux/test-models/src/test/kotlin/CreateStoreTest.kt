@@ -2,6 +2,8 @@ package com.example.test
 
 import com.example.test.generated.CatFluxState
 import com.github.rougsig.rxflux.core.*
+import core.middleware.Middleware
+import core.middleware.createMiddleware
 import io.reactivex.observers.TestObserver
 import junit.framework.TestCase
 

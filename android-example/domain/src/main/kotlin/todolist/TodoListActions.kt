@@ -1,6 +1,6 @@
 package com.github.rougsig.rxflux.android.domain.todolist
 
-import com.github.rougsig.rxflux.core.Action
+import com.github.rougsig.rxflux.core.action.Action
 
 fun loadTodoListAction(): Action {
   return TodoListActorAction.LoadTodoList

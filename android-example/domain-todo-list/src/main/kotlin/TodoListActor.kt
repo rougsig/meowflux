@@ -4,11 +4,7 @@ import com.github.rougsig.rxflux.android.core.toLceEventObservable
 import com.github.rougsig.rxflux.android.domain.todolist.generated.TodoListFluxState
 import com.github.rougsig.rxflux.android.repository.TodoListRepository
 import com.github.rougsig.rxflux.core.action.Action
-import com.github.rougsig.rxflux.core.middleware.ActorUpstream
-import com.github.rougsig.rxflux.core.middleware.TypedActor
-import com.github.rougsig.rxflux.core.middleware.TypedActorTask
-import com.github.rougsig.rxflux.core.middleware.concatTasks
-import io.reactivex.ObservableSource
+import com.github.rougsig.rxflux.dsl.ConfigurableActor
 import javax.inject.Inject
 
 sealed class TodoListActorAction : Action() {
@@ -19,37 +15,32 @@ sealed class TodoListActorAction : Action() {
 
 class TodoListActor @Inject constructor(
   private val repository: TodoListRepository
-) : TypedActor<TodoListFluxState, TodoListActorAction>(TodoListActorAction::class) {
+) : ConfigurableActor<TodoListFluxState, TodoListActorAction>() {
+  init {
+    flatMapActor<TodoListActorAction> {
+      task(TodoListActorAction.AddTodoItem::class) { _, action ->
+        repository
+          .addTodoItem(action.text)
+          .toLceEventObservable(
+            { TodoListActorAction.LoadTodoList },
+            { TodoListReducerAction.UpdateAddItemState(it) }
+          )
+      }
 
-  private val addItemTask = TypedActorTask<TodoListFluxState, TodoListActorAction.AddTodoItem> { _, action ->
-    repository
-      .addTodoItem(action.text)
-      .toLceEventObservable(
-        { TodoListActorAction.LoadTodoList },
-        { TodoListReducerAction.UpdateAddItemState(it) }
-      )
-  }
+      task(TodoListActorAction.RemoveTodoItem::class) { _, action ->
+        repository
+          .removeTodoItem(action.id)
+          .toLceEventObservable(
+            { TodoListActorAction.LoadTodoList },
+            { TodoListReducerAction.UpdateRemoveItemState(it) }
+          )
+      }
 
-  private val removeItemTask = TypedActorTask<TodoListFluxState, TodoListActorAction.RemoveTodoItem> { _, action ->
-    repository
-      .removeTodoItem(action.id)
-      .toLceEventObservable(
-        { TodoListActorAction.LoadTodoList },
-        { TodoListReducerAction.UpdateRemoveItemState(it) }
-      )
-  }
-
-  private val loadItemsTask = TypedActorTask<TodoListFluxState, TodoListActorAction.LoadTodoList> { _, _ ->
-    repository
-      .getTodoList()
-      .toLceEventObservable { TodoListReducerAction.UpdateItemsState(it) }
-  }
-
-  override fun applyTyped(upstream: ActorUpstream<TodoListFluxState, TodoListActorAction>): ObservableSource<Action> {
-    return upstream.concatTasks(
-      addItemTask,
-      removeItemTask,
-      loadItemsTask
-    )
+      task(TodoListActorAction.LoadTodoList::class) { _, _ ->
+        repository
+          .getTodoList()
+          .toLceEventObservable { TodoListReducerAction.UpdateItemsState(it) }
+      }
+    }
   }
 }

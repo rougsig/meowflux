@@ -11,7 +11,6 @@ interface Store<S : Any> : Dispatcher {
   val stateLive: Observable<S>
 }
 
-
 @Suppress("FunctionName")
 fun <S : Any> Store(
   reducer: Reducer<S, Action>,

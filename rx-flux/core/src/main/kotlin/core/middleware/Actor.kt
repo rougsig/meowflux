@@ -26,13 +26,21 @@ abstract class Actor<S : Any> : Middleware<S> {
   abstract fun apply(upstream: ActorUpstream<S, Action>): ObservableSource<Action>
 }
 
-@Suppress("FunctionName")
-inline fun <S : Any> Actor(
-  crossinline actor: (upstream: ActorUpstream<S, Action>) -> ObservableSource<Action>
-): Actor<S> {
-  return object : Actor<S>() {
-    override fun apply(upstream: ActorUpstream<S, Action>): ObservableSource<Action> {
-      return actor(upstream)
-    }
+internal class ActorImpl<S : Any>(
+  private val tasks: List<ActorTask<S, Action>>,
+  private val composer: ActorTaskComposer<S>
+) : Actor<S>() {
+  override fun apply(upstream: ActorUpstream<S, Action>): ObservableSource<Action> {
+    return composer.compose(upstream, tasks)
+  }
+}
+
+internal class ActorGroupImpl<S : Any>(
+  private val actors: List<Actor<S>>
+) : Actor<S>() {
+  override fun apply(upstream: ActorUpstream<S, Action>): ObservableSource<Action> {
+    return upstream
+      .flatMapIterable { actors.map { it.apply(upstream) } }
+      .concatMap { it }
   }
 }

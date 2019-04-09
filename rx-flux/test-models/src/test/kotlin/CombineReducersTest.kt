@@ -5,8 +5,8 @@ import com.example.test.CombineReducersTest.AnimalAction.DuckCounterAction
 import com.example.test.generated.AnimalFluxState
 import com.example.test.generated.CatFluxState
 import com.example.test.generated.DuckFluxState
-import com.github.rougsig.rxflux.core.Action
-import com.github.rougsig.rxflux.core.safeReducer
+import com.github.rougsig.rxflux.core.action.Action
+import com.github.rougsig.rxflux.dsl.ConfigurableReducer
 import junit.framework.TestCase
 
 class CombineReducersTest : TestCase() {
@@ -23,24 +23,30 @@ class CombineReducersTest : TestCase() {
     }
   }
 
-  fun testGeneratedCombineReducers() {
-    val catReducer = safeReducer(CatFluxState(0)) { s: CatFluxState, a: CatCounterAction ->
-      when (a) {
-        CatCounterAction.Inc ->
-          s.setCounter(s.counter + 1)
-        CatCounterAction.Dec ->
-          s.setCounter(s.counter - 1)
-      }
+  class CatReducer : ConfigurableReducer<CatFluxState, CatCounterAction>(
+    CatCounterAction::class,
+    CatFluxState(0)
+  ) {
+    init {
+      mutator(CatCounterAction.Inc::class) { s, _ -> s.setCounter(s.counter + 1) }
+      mutator(CatCounterAction.Dec::class) { s, _ -> s.setCounter(s.counter - 1) }
     }
+  }
 
-    val duckReducer = safeReducer(DuckFluxState(0)) { s: DuckFluxState, a: DuckCounterAction ->
-      when (a) {
-        DuckCounterAction.Inc ->
-          s.setCounter(s.counter + 1)
-        DuckCounterAction.Dec ->
-          s.setCounter(s.counter - 1)
-      }
+  class DuckReducer : ConfigurableReducer<DuckFluxState, DuckCounterAction>(
+    DuckCounterAction::class,
+    DuckFluxState(0)
+  ) {
+    init {
+      mutator(DuckCounterAction.Inc::class) { s, _ -> s.setCounter(s.counter + 1) }
+      mutator(DuckCounterAction.Dec::class) { s, _ -> s.setCounter(s.counter - 1) }
     }
+  }
+
+
+  fun testGeneratedCombineReducers() {
+    val catReducer = CatReducer()
+    val duckReducer = DuckReducer()
 
     val animalReducer = AnimalFluxState.combineReducers(
       catStateReducer = catReducer,

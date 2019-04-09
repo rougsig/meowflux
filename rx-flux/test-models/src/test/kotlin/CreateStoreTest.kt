@@ -1,9 +1,11 @@
 package com.example.test
 
 import com.example.test.generated.CatFluxState
-import com.github.rougsig.rxflux.core.*
-import core.middleware.Middleware
-import core.middleware.createMiddleware
+import com.github.rougsig.rxflux.core.action.Action
+import com.github.rougsig.rxflux.core.dispatcher.Dispatcher
+import com.github.rougsig.rxflux.core.middleware.Middleware
+import com.github.rougsig.rxflux.core.store.Store
+import com.github.rougsig.rxflux.dsl.ConfigurableReducer
 import io.reactivex.observers.TestObserver
 import junit.framework.TestCase
 
@@ -14,17 +16,20 @@ class CreateStoreTest : TestCase() {
     object Dec : CounterAction()
   }
 
-  private val reducer = safeReducer(CatFluxState(0)) { s: CatFluxState, a: CounterAction ->
-    when (a) {
-      CounterAction.Inc ->
-        s.setCounter(s.counter + 1)
-      CounterAction.Dec ->
-        s.setCounter(s.counter - 1)
+  class CounterReducer : ConfigurableReducer<CatFluxState, CounterAction>(
+    CounterAction::class,
+    CatFluxState(0)
+  ) {
+    init {
+      mutator(CounterAction.Inc::class) { s, _ -> s.setCounter(s.counter + 1) }
+      mutator(CounterAction.Dec::class) { s, _ -> s.setCounter(s.counter - 1) }
     }
   }
 
+  private val reducer = CounterReducer()
+
   fun testCreateStore() {
-    val store = createStore(reducer)
+    val store = Store(reducer)
 
     store.dispatch(CounterAction.Inc)
     assertEquals(1, store.state.counter)
@@ -34,7 +39,7 @@ class CreateStoreTest : TestCase() {
   }
 
   fun testStoreSubscribe() {
-    val store = createStore(reducer)
+    val store = Store(reducer)
 
     val observer = TestObserver<CatFluxState>()
     store.stateLive.subscribe(observer)
@@ -53,15 +58,15 @@ class CreateStoreTest : TestCase() {
   }
 
   fun testStoreMiddleware() {
-    val decMiddleware: Middleware<CatFluxState> = createMiddleware { getState, _ ->
+    val decMiddleware: Middleware<CatFluxState> = Middleware { accessor, _ ->
       { next ->
-        createDispatcher { action ->
-          if (getState().counter == 1) next.dispatch(CounterAction.Dec)
+        Dispatcher { action ->
+          if (accessor.getState().counter == 1) next.dispatch(CounterAction.Dec)
           next.dispatch(action)
         }
       }
     }
-    val store = createStore(reducer, decMiddleware)
+    val store = Store(reducer, decMiddleware)
 
     store.dispatch(CounterAction.Inc)
     assertEquals(1, store.state.counter)

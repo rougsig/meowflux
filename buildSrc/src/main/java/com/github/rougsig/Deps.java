@@ -1,7 +1,7 @@
 package com.github.rougsig;
 
 public final class Deps {
-    private static final String kotlinVersion = "1.3.21";
+    private static final String kotlinVersion = "1.3.30";
 
     public static final String kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:" + kotlinVersion;
     public static final String kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:" + kotlinVersion;

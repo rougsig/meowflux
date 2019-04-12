@@ -1,12 +1,13 @@
 include ':rx-flux:processor',
         ':rx-flux:core',
-        ":rx-flux:test-models",
+        ':rx-flux:test-models',
+        ':rx-flux-2',
 
-        ":android-example:app",
-        ":android-example:ui-todo-list",
-        ":android-example:domain",
-        ":android-example:domain-todo-list",
-        ":android-example:repository",
-        ":android-example:entity",
-        ":android-example:core",
-        ":android-example:ui-core"
+        ':android-example:app',
+        ':android-example:ui-todo-list',
+        ':android-example:domain',
+        ':android-example:domain-todo-list',
+        ':android-example:repository',
+        ':android-example:entity',
+        ':android-example:core',
+        ':android-example:ui-core'

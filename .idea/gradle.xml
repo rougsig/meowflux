@@ -20,6 +20,7 @@
             <option value="$PROJECT_DIR$/android-example/ui-todo-list" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/rx-flux" />
+            <option value="$PROJECT_DIR$/rx-flux-2" />
             <option value="$PROJECT_DIR$/rx-flux/core" />
             <option value="$PROJECT_DIR$/rx-flux/processor" />
             <option value="$PROJECT_DIR$/rx-flux/test-models" />

@@ -4,6 +4,7 @@ import com.github.rougsig.rxflux.core.action.Action
 import com.github.rougsig.rxflux.core.dispatcher.Dispatcher
 import com.github.rougsig.rxflux.core.store.StateAccessor
 import com.jakewharton.rxrelay2.PublishRelay
+import io.reactivex.Observable
 import io.reactivex.ObservableSource
 
 abstract class Actor<S : Any> : Middleware<S> {
@@ -26,12 +27,22 @@ abstract class Actor<S : Any> : Middleware<S> {
   abstract fun apply(upstream: ActorUpstream<S, Action>): ObservableSource<Action>
 }
 
-internal class ActorImpl<S : Any>(
-  private val tasks: List<ActorTask<S, Action>>,
-  private val composer: ActorTaskComposer<S>
+internal class ActorImpl<S : Any, A : Action>(
+  private val tasks: List<ActorTask<S, A>>,
+  private val composer: ActorTaskComposer
 ) : Actor<S>() {
   override fun apply(upstream: ActorUpstream<S, Action>): ObservableSource<Action> {
-    return composer.compose(upstream, tasks)
+    return upstream
+      .publish { selector ->
+        Observable.merge(
+          tasks.map { task ->
+            selector
+              .filter { (_, action) -> task.type.java.isInstance(action) }
+              .map { (accessor, action) -> task.run(accessor.getState(), task.type.java.cast(action)) }
+          }
+        )
+      }
+      .compose(composer)
   }
 }
 
@@ -39,8 +50,6 @@ internal class ActorGroupImpl<S : Any>(
   private val actors: List<Actor<S>>
 ) : Actor<S>() {
   override fun apply(upstream: ActorUpstream<S, Action>): ObservableSource<Action> {
-    return upstream
-      .flatMapIterable { actors.map { it.apply(upstream) } }
-      .concatMap { it }
+    return Observable.merge(actors.map { it.apply(upstream) })
   }
 }

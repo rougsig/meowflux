@@ -11,7 +11,7 @@ open class ActorGroupBuilder<S : Any> {
   fun <A : Action> flatMapActor(
     setup: ActorBuilder<S, A>.() -> Unit = {}
   ): ActorGroupBuilder<S> {
-    val builder = ActorBuilder<S, A>(FlatActorTaskComposer())
+    val builder = ActorBuilder<S, A>(FlatMapTaskComposer())
     builder.setup()
     actors.add(builder.build())
     return this
@@ -20,7 +20,7 @@ open class ActorGroupBuilder<S : Any> {
   fun <A : Action> concatMapActor(
     setup: ActorBuilder<S, A>.() -> Unit = {}
   ): ActorGroupBuilder<S> {
-    val builder = ActorBuilder<S, A>(ConcatActorTaskComposer())
+    val builder = ActorBuilder<S, A>(ConcatMapActorTaskComposer())
     builder.setup()
     actors.add(builder.build())
     return this
@@ -29,7 +29,7 @@ open class ActorGroupBuilder<S : Any> {
   fun <A : Action> switchMapActor(
     setup: ActorBuilder<S, A>.() -> Unit = {}
   ): ActorGroupBuilder<S> {
-    val builder = ActorBuilder<S, A>(SwitchActorTaskComposer())
+    val builder = ActorBuilder<S, A>(SwitchMapActorTaskComposer())
     builder.setup()
     actors.add(builder.build())
     return this

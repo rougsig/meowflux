@@ -17,7 +17,7 @@ class TodoListActor @Inject constructor(
   private val repository: TodoListRepository
 ) : ConfigurableActor<TodoListFluxState, TodoListActorAction>() {
   init {
-    flatMapActor<TodoListActorAction> {
+    concatMapActor<TodoListActorAction>() {
       task(TodoListActorAction.AddTodoItem::class) { _, action ->
         repository
           .addTodoItem(action.text)

@@ -8,31 +8,32 @@ import com.github.rougsig.rxflux.core.store.StateAccessor
 open class ActorGroupBuilder<S : Any> {
   private val actors = mutableListOf<Actor<S>>()
 
-  fun <A : Action> flatMapActor(
+  fun <A : Action> actor(
+    composer: ActorTaskComposer,
     setup: ActorBuilder<S, A>.() -> Unit = {}
   ): ActorGroupBuilder<S> {
-    val builder = ActorBuilder<S, A>(FlatMapTaskComposer())
+    val builder = ActorBuilder<S, A>(composer)
     builder.setup()
     actors.add(builder.build())
     return this
+  }
+
+  fun <A : Action> flatMapActor(
+    setup: ActorBuilder<S, A>.() -> Unit = {}
+  ): ActorGroupBuilder<S> {
+    return actor(FlatMapTaskComposer(), setup)
   }
 
   fun <A : Action> concatMapActor(
     setup: ActorBuilder<S, A>.() -> Unit = {}
   ): ActorGroupBuilder<S> {
-    val builder = ActorBuilder<S, A>(ConcatMapActorTaskComposer())
-    builder.setup()
-    actors.add(builder.build())
-    return this
+    return actor(ConcatMapActorTaskComposer(), setup)
   }
 
   fun <A : Action> switchMapActor(
     setup: ActorBuilder<S, A>.() -> Unit = {}
   ): ActorGroupBuilder<S> {
-    val builder = ActorBuilder<S, A>(SwitchMapActorTaskComposer())
-    builder.setup()
-    actors.add(builder.build())
-    return this
+    return actor(SwitchMapActorTaskComposer(), setup)
   }
 
   internal fun build(): ActorGroupImpl<S> {

@@ -7,8 +7,7 @@ import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 
 typealias ActorUpstream<S, A> = Observable<Pair<StateAccessor<S>, A>>
-
-interface ActorTaskComposer : ObservableTransformer<ObservableSource<Action>, Action>
+typealias ActorTaskComposer = ObservableTransformer<ObservableSource<Action>, Action>
 
 class FlatMapTaskComposer : ActorTaskComposer {
   override fun apply(upstream: Observable<ObservableSource<Action>>): ObservableSource<Action> {

@@ -1,7 +1,6 @@
 include ':rx-flux:processor',
         ':rx-flux:core',
         ':rx-flux:test-models',
-        ':rx-flux-2',
 
         ':android-example:app',
         ':android-example:ui-todo-list',

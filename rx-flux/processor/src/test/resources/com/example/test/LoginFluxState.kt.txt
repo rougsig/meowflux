@@ -1,9 +1,8 @@
 package com.example.test.generated
 
 import com.example.test.Phone
-import com.github.rougsig.rxflux.core.Action
-import com.github.rougsig.rxflux.core.Reducer
-import com.github.rougsig.rxflux.core.createReducer
+import com.github.rougsig.rxflux.core.action.Action
+import com.github.rougsig.rxflux.core.reducer.Reducer
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -38,7 +37,7 @@ class LoginFluxState private constructor(private val map: ImmutableMap<Any, Any?
     companion object {
         fun combineReducers(phoneReducer: Reducer<Phone<Int, Long, Unit>, Action>,
                 passwordReducer: Reducer<String?, Action>): Reducer<LoginFluxState, Action> =
-                createReducer<LoginFluxState> { s: LoginFluxState?, action: Action ->
+                Reducer<LoginFluxState> { s: LoginFluxState?, action: Action ->
         val state = s ?: LoginFluxState(map = immutableHashMapOf())
         val phoneOld = state.map["phone"] as? Phone<Int, Long, Unit>
         val phoneNew = phoneReducer.reduce(phoneOld, action)

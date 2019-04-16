@@ -11,6 +11,7 @@ abstract class Actor<S : Any> : Middleware<S> {
   private val relay = PublishRelay.create<Action>()
 
   final override fun apply(accessor: StateAccessor<S>, dispatcher: Dispatcher): (Dispatcher) -> Dispatcher {
+    @Suppress("CheckResult")
     relay
       .map { accessor to it }
       .compose(::apply)

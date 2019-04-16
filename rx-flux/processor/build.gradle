@@ -25,3 +25,5 @@ dependencies {
     kapt RxFluxDeps.autoService
     kaptTest RxFluxDeps.autoService
 }
+
+apply from: '../../gradle-mvn-push.gradle'

@@ -13,3 +13,5 @@ dependencies {
     implementation Deps.rxRelay
     api RxFluxDeps.immutable
 }
+
+apply from: '../../gradle-mvn-push.gradle'

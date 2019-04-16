@@ -11,12 +11,10 @@ inline fun <T, F> Observable<T>.distinctFieldChanges(crossinline fieldSelector: 
 }
 
 fun <T> Observable<T>.toLceEventObservable(
-  actionOnSuccess: (() -> Action)? = null,
   stateCreator: (LceState<T>) -> Action
 ): Observable<Action> {
   return this
     .map { stateCreator(LceState.Content(it)) }
-    .let { if (actionOnSuccess != null) it.mergeWith(Observable.fromCallable { actionOnSuccess() }) else it }
     .onErrorReturn { stateCreator(LceState.Error(it.localizedMessage)) }
     .startWith(stateCreator(LceState.Loading()))
 }
@@ -25,3 +23,6 @@ fun <T> Observable<T>.skipFirstIf(value: Boolean): Observable<T> {
   return if (value) this.skip(1) else this
 }
 
+fun Observable<Action>.actionOnSuccess(block: () -> Action): Observable<Action> {
+  return this.mergeWith(Observable.fromCallable { block() })
+}

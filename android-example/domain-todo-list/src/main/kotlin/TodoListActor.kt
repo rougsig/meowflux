@@ -1,5 +1,6 @@
 package com.github.rougsig.rxflux.android.domain.todolist
 
+import com.github.rougsig.rxflux.android.core.actionOnSuccess
 import com.github.rougsig.rxflux.android.core.toLceEventObservable
 import com.github.rougsig.rxflux.android.domain.todolist.generated.TodoListFluxState
 import com.github.rougsig.rxflux.android.repository.TodoListRepository
@@ -21,19 +22,15 @@ class TodoListActor @Inject constructor(
       task(TodoListActorAction.AddTodoItem::class) { _, action ->
         repository
           .addTodoItem(action.text)
-          .toLceEventObservable(
-            { TodoListActorAction.LoadTodoList },
-            { TodoListReducerAction.UpdateAddItemState(it) }
-          )
+          .toLceEventObservable { TodoListReducerAction.UpdateAddItemState(it) }
+          .actionOnSuccess { TodoListActorAction.LoadTodoList }
       }
 
       task(TodoListActorAction.RemoveTodoItem::class) { _, action ->
         repository
           .removeTodoItem(action.id)
-          .toLceEventObservable(
-            { TodoListActorAction.LoadTodoList },
-            { TodoListReducerAction.UpdateRemoveItemState(it) }
-          )
+          .toLceEventObservable { TodoListReducerAction.UpdateRemoveItemState(it) }
+          .actionOnSuccess { TodoListActorAction.LoadTodoList }
       }
 
       task(TodoListActorAction.LoadTodoList::class) { _, _ ->
@@ -44,3 +41,4 @@ class TodoListActor @Inject constructor(
     }
   }
 }
+

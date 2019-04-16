@@ -12,7 +12,7 @@ interface ActorTask<S : Any, A : Action> {
 
 internal class ActorTaskImpl<S : Any, A : Action>(
   override val type: KClass<A>,
-  private val task: (state: S, action: A) -> ObservableSource<Action>
+  private val task: (S, A) -> ObservableSource<Action>
 ) : ActorTask<S, A> {
   override fun run(state: S, action: A): ObservableSource<Action> {
     return task(state, action)

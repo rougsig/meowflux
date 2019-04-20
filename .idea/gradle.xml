@@ -23,6 +23,7 @@
             <option value="$PROJECT_DIR$/rx-flux/core" />
             <option value="$PROJECT_DIR$/rx-flux/processor" />
             <option value="$PROJECT_DIR$/rx-flux/test-models" />
+            <option value="$PROJECT_DIR$/rx-flux2" />
           </set>
         </option>
         <option name="useAutoImport" value="true" />

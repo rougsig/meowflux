@@ -1,6 +1,7 @@
 package com.github.rougsig.rxflux.dsl
 
 import com.github.rougsig.rxflux.core.action.Action
+import com.github.rougsig.rxflux.core.action.ScopedAction
 import com.github.rougsig.rxflux.core.reducer.Mutator
 import com.github.rougsig.rxflux.core.reducer.MutatorImpl
 import com.github.rougsig.rxflux.core.reducer.Reducer
@@ -30,13 +31,18 @@ open class ReducerBuilder<S : Any, A : Action>(
   }
 }
 
-abstract class ConfigurableReducer<S : Any, A : Action>(
-  type: KClass<A>,
-  initialState: S
-) : Reducer<S, Action>, ReducerBuilder<S, A>(type, initialState) {
+abstract class ConfigurableReducer<S : Any>(
+  type: KClass<Action>,
+  initialState: S,
+  val namespace: String
+) : Reducer<S, Action>, ReducerBuilder<S, Action>(type, initialState) {
   private val reducer = this.build()
 
   final override fun reduce(state: S?, action: Action): S {
     return reducer.reduce(state, action)
+  }
+
+  protected fun createAction(creator: () -> Action): Action {
+    return ScopedAction(creator.invoke(), namespace)
   }
 }

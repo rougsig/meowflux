@@ -1,7 +1,10 @@
 package com.github.rougsig.rxflux.core.store
 
+import io.reactivex.Observable
+
 interface StateAccessor<S : Any> {
   fun getState(): S
+  fun getStateLive(): Observable<S>
 }
 
 @Suppress("FunctionName")

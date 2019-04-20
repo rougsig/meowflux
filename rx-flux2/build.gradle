@@ -1,0 +1,15 @@
+import com.github.rougsig.Deps
+import com.github.rougsig.RxFluxDeps
+
+apply plugin: 'kotlin'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation Deps.kotlinStdLib
+    implementation Deps.rxJava
+    implementation Deps.rxRelay
+    implementation RxFluxDeps.immutable
+}

@@ -1,14 +1,12 @@
 package com.github.rougsig.rxflux2.core
 
 abstract class FluxModule<S : Any, M : FluxMutations<S>, G : FluxGetters<S>, A : FluxActions<S, M>>(
-  initialState: S,
-  val mutations: M,
-  val getters: G,
-  val actions: A
-) :
-  FluxMutations<S> by mutations,
-  FluxGetters<S> by getters,
-  FluxActions<S, M> by actions {
+  initialState: S
+) {
+
+  abstract val mutations: M
+  abstract val actions: A
+  abstract val getters: G
 
   @Volatile
   var state: S = initialState

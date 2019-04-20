@@ -12,4 +12,6 @@ dependencies {
     implementation Deps.rxJava
     implementation Deps.rxRelay
     implementation RxFluxDeps.immutable
+
+    testImplementation Deps.unitTestLibs
 }

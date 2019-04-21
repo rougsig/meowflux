@@ -5,7 +5,7 @@ import junit.framework.TestCase
 
 class CounterModuleGetterTest : TestCase() {
 
-  fun testisPositiveCountGetter() {
+  fun testIsPositiveCountGetter() {
     val module = CounterModule()
 
     module.commit { it.dec(10) }

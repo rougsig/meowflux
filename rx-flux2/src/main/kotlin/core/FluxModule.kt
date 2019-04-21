@@ -1,12 +1,14 @@
 package com.github.rougsig.rxflux2.core
 
-abstract class FluxModule<S : Any, M : FluxMutations<S>, G : FluxGetters<S>, A : FluxActions<S, M>>(
+import io.reactivex.Single
+
+abstract class FluxModule<S : Any, M : FluxMutations<S>, G : FluxGetters<S>, A : FluxActions<S, M, G, A>>(
   initialState: S
 ) {
 
   abstract val mutations: M
-  abstract val actions: A
   abstract val getters: G
+  abstract val actions: A
 
   @Volatile
   var previousState: S? = null
@@ -25,5 +27,10 @@ abstract class FluxModule<S : Any, M : FluxMutations<S>, G : FluxGetters<S>, A :
     }
   }
 
+  fun dispatch(action: A.(FluxContext<S, M, G, A>) -> Single<FluxContext<S, M, G, A>>) {
+    actions
+      .action(FluxContext(mutations, getters, actions))
+
+  }
 }
 

@@ -10,7 +10,7 @@ class CounterModuleGetterTest : TestCase() {
 
     module.commit { it.dec(10) }
 
-    assertEquals(false, module.isPositiveCount)
+    assertEquals(false, module.getters.isPositiveCount)
   }
 
 }

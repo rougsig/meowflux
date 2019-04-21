@@ -2,10 +2,10 @@ package com.github.rougsig.rxflux2.counter
 
 import com.github.rougsig.rxflux2.core.FluxGetters
 
-interface CounterGetters : FluxGetters<CounterState> {
-
-  val isPositiveCount
-    get() = state.count > 0
-
+class CounterGetters(
+  override val previousState: () -> CounterState?,
+  override val state: () -> CounterState
+) : FluxGetters<CounterState>() {
+  val isPositiveCount by Getter { count > 0 }
 }
 

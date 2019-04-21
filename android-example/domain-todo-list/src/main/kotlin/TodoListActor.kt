@@ -15,7 +15,8 @@ sealed class TodoListActorAction : Action() {
 }
 
 class TodoListActor @Inject constructor(
-  private val repository: TodoListRepository
+  private val repository: TodoListRepository,
+  private val reducer: TodoListReducer
 ) : ConfigurableActor<TodoListFluxState, TodoListActorAction>() {
   init {
     concatMapActor<TodoListActorAction> {

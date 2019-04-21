@@ -3,6 +3,7 @@ include ':rx-flux:processor',
         ':rx-flux:test-models',
 
         ':rx-flux2',
+        ':rx-flux3',
 
         ':android-example:app',
         ':android-example:ui-todo-list',

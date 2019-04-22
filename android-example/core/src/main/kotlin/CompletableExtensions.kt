@@ -5,8 +5,8 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 
 fun Completable.toLceEventObservable(
-  stateCreator: (LceState<Unit>) -> Action
-): Observable<Action> {
+  stateCreator: (LceState<Unit>) -> Action<*>
+): Observable<Action<*>> {
   return this
     .andThen(Observable.fromCallable { stateCreator(LceState.Content(Unit)) })
     .onErrorReturn { stateCreator(LceState.Error(it.localizedMessage)) }

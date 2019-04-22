@@ -1,39 +1,49 @@
 package com.github.rougsig.rxflux.android.domain.todolist
 
 import com.github.rougsig.rxflux.android.core.LceState
-import com.github.rougsig.rxflux.android.domain.todolist.generated.TodoListFluxState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
-import com.github.rougsig.rxflux.core.store.Store
+import com.github.rougsig.rxflux.core.action.Action
+import com.github.rougsig.rxflux.core.store.FluxStore
 import io.reactivex.observers.TestObserver
 import junit.framework.TestCase
+import java.util.concurrent.TimeUnit
 
 class TestTodoListActor : TestCase() {
 
   fun testLoadTodoList() {
-    val store = Store(TodoListReducer(), TodoListActor(TestTodoListRepository()))
+    val store = FluxStore()
 
-    val observer = TestObserver<TodoListFluxState>()
-    store.stateLive.subscribe(observer)
+    val reducer = TodoListReducer()
+    val actor = TodoListActor(reducer, TestTodoListRepository())
 
-    store.dispatch(TodoListActorAction.LoadTodoList)
+    store.addReducer(reducer)
+    store.addActor(actor)
+
+    val observer = TestObserver<TodoListState>()
+    reducer.subscribe(observer)
+
+    store.dispatch(actor.loadTodoList())
 
     observer
       .assertNotComplete()
       .assertValues(
-        TodoListFluxState(
+        TodoListState(
+          todoListItems = null,
+          addTodoItem = null,
+          removeTodoItem = null
+        ),
+        TodoListState(
           todoListItems = LceState.Loading(),
           addTodoItem = null,
           removeTodoItem = null
         ),
-        TodoListFluxState(
-          todoListItems = LceState.Content(
-            listOf(
-              TodoItem(
-                id = 1L,
-                text = "TodoItem 1"
-              )
+        TodoListState(
+          todoListItems = LceState.Content(listOf(
+            TodoItem(
+              id = 1,
+              text = "TodoItem 1"
             )
-          ),
+          )),
           addTodoItem = null,
           removeTodoItem = null
         )
@@ -41,32 +51,43 @@ class TestTodoListActor : TestCase() {
   }
 
   fun testAddTodoItem() {
-    val store = Store(TodoListReducer(), TodoListActor(TestTodoListRepository()))
+    val store = FluxStore()
 
-    val observer = TestObserver<TodoListFluxState>()
-    store.stateLive.subscribe(observer)
+    val reducer = TodoListReducer()
+    val actor = TodoListActor(reducer, TestTodoListRepository())
 
-    store.dispatch(TodoListActorAction.AddTodoItem(text = "Hello World"))
+    store.addReducer(reducer)
+    store.addActor(actor)
+
+    val observer = TestObserver<TodoListState>()
+    reducer.subscribe(observer)
+
+    store.dispatch(actor.addTodoItem(text = "Hello World"))
 
     observer
       .assertNotComplete()
       .assertValues(
-        TodoListFluxState(
+        TodoListState(
+          todoListItems = null,
+          addTodoItem = null,
+          removeTodoItem = null
+        ),
+        TodoListState(
           todoListItems = null,
           addTodoItem = LceState.Loading(),
           removeTodoItem = null
         ),
-        TodoListFluxState(
+        TodoListState(
           todoListItems = null,
           addTodoItem = LceState.Content(Unit),
           removeTodoItem = null
         ),
-        TodoListFluxState(
+        TodoListState(
           todoListItems = LceState.Loading(),
           addTodoItem = LceState.Content(Unit),
           removeTodoItem = null
         ),
-        TodoListFluxState(
+        TodoListState(
           todoListItems = LceState.Content(
             listOf(
               TodoItem(
@@ -86,32 +107,43 @@ class TestTodoListActor : TestCase() {
   }
 
   fun testRemoveTodoItem() {
-    val store = Store(TodoListReducer(), TodoListActor(TestTodoListRepository()))
+    val store = FluxStore()
 
-    val observer = TestObserver<TodoListFluxState>()
-    store.stateLive.subscribe(observer)
+    val reducer = TodoListReducer()
+    val actor = TodoListActor(reducer, TestTodoListRepository())
 
-    store.dispatch(TodoListActorAction.RemoveTodoItem(id = 1L))
+    store.addReducer(reducer)
+    store.addActor(actor)
+
+    val observer = TestObserver<TodoListState>()
+    reducer.subscribe(observer)
+
+    store.dispatch(actor.removeTodoItem(id = 1))
 
     observer
       .assertNotComplete()
       .assertValues(
-        TodoListFluxState(
+        TodoListState(
+          todoListItems = null,
+          addTodoItem = null,
+          removeTodoItem = null
+        ),
+        TodoListState(
           todoListItems = null,
           addTodoItem = null,
           removeTodoItem = LceState.Loading()
         ),
-        TodoListFluxState(
+        TodoListState(
           todoListItems = null,
           addTodoItem = null,
           removeTodoItem = LceState.Content(Unit)
         ),
-        TodoListFluxState(
+        TodoListState(
           todoListItems = LceState.Loading(),
           addTodoItem = null,
           removeTodoItem = LceState.Content(Unit)
         ),
-        TodoListFluxState(
+        TodoListState(
           todoListItems = LceState.Content(emptyList()),
           addTodoItem = null,
           removeTodoItem = LceState.Content(Unit)

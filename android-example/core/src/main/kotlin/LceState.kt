@@ -30,13 +30,13 @@ data class LceState<out Content>(
   val isError get() = error != null
 
   fun asContent(): Content {
-    check(!isLoading) { "expected content state, but isLoading=true" }
-    check(error == null) { "expected content state, but error != null" }
-    return content ?: throw IllegalStateException("expected content state, but content is null")
+    check(!isLoading) { "expected content stateLive, but isLoading=true" }
+    check(error == null) { "expected content stateLive, but error != null" }
+    return content ?: throw IllegalStateException("expected content stateLive, but content is null")
   }
 
   fun asError(): String {
-    check(!isLoading) { "expected content state, but isLoading=true" }
-    return error ?: throw IllegalStateException("expected error state, but error is null")
+    check(!isLoading) { "expected content stateLive, but isLoading=true" }
+    return error ?: throw IllegalStateException("expected error stateLive, but error is null")
   }
 }

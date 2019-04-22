@@ -38,5 +38,4 @@ dependencies {
     testImplementation Deps.unitTestLibs
 
     kapt AndroidDeps.toothpickProcessor
-    kapt project(":rx-flux:processor")
 }

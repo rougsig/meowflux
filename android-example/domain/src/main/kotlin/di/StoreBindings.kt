@@ -2,7 +2,6 @@ package com.github.rougsig.rxflux.android.domain.di
 
 import com.github.rougsig.rxflux.android.core.ToothpickModuleBindings
 import com.github.rougsig.rxflux.android.domain.app.AppStore
-import com.github.rougsig.rxflux.core.store.BaseStore
 import com.github.rougsig.rxflux.core.store.Store
 import toothpick.config.Module
 

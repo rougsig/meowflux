@@ -3,13 +3,13 @@ package com.github.rougsig.rxflux.android.domain.todolist
 import com.github.rougsig.rxflux.core.action.Action
 
 fun loadTodoListAction(): Action {
-  return TodoListActorAction.LoadTodoList
+  return Action.LoadTodoList
 }
 
 fun addTodoItemAction(text: String): Action {
-  return TodoListActorAction.AddTodoItem(text)
+  return Action.AddTodoItem(text)
 }
 
 fun removeTodoItemAction(id: Long): Action {
-  return TodoListActorAction.RemoveTodoItem(id)
+  return Action.RemoveTodoItem(id)
 }

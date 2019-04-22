@@ -1,19 +1,18 @@
 package com.github.rougsig.rxflux.core.reducer
 
-import com.github.rougsig.rxflux.core.action.Action
 import kotlin.reflect.KClass
 
-interface Mutator<S, A: Action> {
+interface Mutator<S, A : Any> {
   fun mutate(state: S, action: A): S
 }
 
-internal class MutatorImpl<S : Any, A : Action>(
+internal class MutatorImpl<S : Any, A : Any>(
   private val type: KClass<A>,
   private val mutator: (state: S, action: A) -> S
-) : Mutator<S, Action> {
-  override fun mutate(state: S, action: Action): S {
+) : Mutator<S, Any> {
+  override fun mutate(state: S, action: Any): S {
     return if (type.java.isInstance(action)) {
-      mutator(state, action as A)
+      mutator(state, type.java.cast(action))
     } else {
       state
     }

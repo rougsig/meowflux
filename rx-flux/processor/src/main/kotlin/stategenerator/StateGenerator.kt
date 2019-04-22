@@ -131,19 +131,19 @@ internal class StateGenerator : Generator<StateType> {
             .builder()
             .add("return ")
             .addStatement("Reducer<${stateType.name}> { s: ${stateType.name}?, action: %T ->", ACTION_CLASS_NAME)
-            .addStatement("val state = s ?: %L(%L = %L())",
+            .addStatement("val stateLive = s ?: %L(%L = %L())",
               stateType, MAP_FIELD_NAME, IMMUTABLE_HASH_MAP_OF)
             .apply {
               fields.forEach { field ->
                 val reducerName = "${field.name.beginWithLowerCase()}Reducer"
-                addStatement("val %LOld = state.%L[%S] as? %T",
+                addStatement("val %LOld = stateLive.%L[%S] as? %T",
                   field.name, MAP_FIELD_NAME, field.name, field.type)
                 addStatement("val %LNew = %L.reduce(%LOld, action)",
                   field.name, reducerName, field.name)
               }
             }
             .apply {
-              add("state")
+              add("stateLive")
               fields.forEach { field ->
                 add(CodeBlock
                   .builder()

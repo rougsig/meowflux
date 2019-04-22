@@ -41,4 +41,3 @@ class TodoListActor @Inject constructor(
   fun addTodoItem(text: String) = createAction { AddTodoItem(text) }
   fun removeTodoItem(id: Long) = createAction { RemoveTodoItem(id) }
 }
-

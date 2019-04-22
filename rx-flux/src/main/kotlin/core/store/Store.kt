@@ -19,6 +19,7 @@ class Store : Observable<Action<*>>() {
       .subscribe { action ->
         reducers.values
           .forEach { reducer -> reducer.accept(action) }
+
         actors.values
           .forEach { actor -> actor.accept(action) }
       }

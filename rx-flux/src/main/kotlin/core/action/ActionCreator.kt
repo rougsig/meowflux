@@ -8,7 +8,7 @@ interface ActionCreator {
     get() = if (prefix.isBlank()) {
       this.javaClass.simpleName
     } else {
-      "$prefix/${this.javaClass.simpleName}"
+      "$prefix-${this.javaClass.simpleName}"
     }
 
   fun <T> createAction(block: () -> T): Action<*> {

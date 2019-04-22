@@ -1,7 +1,7 @@
 package com.github.rougsig.rxflux.dsl
 
 import com.github.rougsig.rxflux.core.action.Action
-import com.github.rougsig.rxflux.core.middleware.*
+import com.github.rougsig.rxflux.core.actor.*
 import io.reactivex.ObservableSource
 import kotlin.reflect.KClass
 

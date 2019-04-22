@@ -3,7 +3,7 @@ package com.github.rougsig.rxflux.android.domain.todolist
 import com.github.rougsig.rxflux.android.core.actionOnSuccess
 import com.github.rougsig.rxflux.android.core.toLceEventObservable
 import com.github.rougsig.rxflux.android.repository.TodoListRepository
-import com.github.rougsig.rxflux.dsl.ConfigurableActorGroup
+import com.github.rougsig.rxflux.dsl.ConfigurableActor
 import javax.inject.Inject
 
 private sealed class TodoListActorAction
@@ -14,28 +14,26 @@ private data class RemoveTodoItem(val id: Long) : TodoListActorAction()
 class TodoListActor @Inject constructor(
   private val reducer: TodoListReducer,
   private val repository: TodoListRepository
-) : ConfigurableActorGroup() {
+) : ConfigurableActor() {
   init {
-    concatMapActor {
-      task(AddTodoItem::class) { action ->
-        repository
-          .addTodoItem(action.text)
-          .toLceEventObservable { reducer.updateAddItemState(it) }
-          .actionOnSuccess { loadTodoList() }
-      }
+    task(AddTodoItem::class) { action ->
+      repository
+        .addTodoItem(action.text)
+        .toLceEventObservable { reducer.updateAddItemState(it) }
+        .actionOnSuccess { loadTodoList() }
+    }
 
-      task(RemoveTodoItem::class) { action ->
-        repository
-          .removeTodoItem(action.id)
-          .toLceEventObservable { reducer.updateRemoveItemState(it) }
-          .actionOnSuccess { loadTodoList() }
-      }
+    task(RemoveTodoItem::class) { action ->
+      repository
+        .removeTodoItem(action.id)
+        .toLceEventObservable { reducer.updateRemoveItemState(it) }
+        .actionOnSuccess { loadTodoList() }
+    }
 
-      task(LoadTodoList::class) { _ ->
-        repository
-          .getTodoList()
-          .toLceEventObservable { reducer.updateItemsState(it) }
-      }
+    task(LoadTodoList::class) { _ ->
+      repository
+        .getTodoList()
+        .toLceEventObservable { reducer.updateItemsState(it) }
     }
   }
 

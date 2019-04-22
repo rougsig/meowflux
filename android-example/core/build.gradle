@@ -31,7 +31,7 @@ android {
 
 dependencies {
     api project(":android-example:entity")
-    api project(":rx-flux:core")
+    api project(":rx-flux")
 
     api Deps.kotlinStdLib
 

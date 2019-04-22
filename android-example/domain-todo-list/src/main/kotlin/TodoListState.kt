@@ -2,7 +2,6 @@ package com.github.rougsig.rxflux.android.domain.todolist
 
 import com.github.rougsig.rxflux.android.core.LceState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
-import com.github.rougsig.rxflux.annotations.CreateFluxState
 
 data class TodoListState(
   val todoListItems: LceState<List<TodoItem>>?,

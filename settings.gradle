@@ -1,4 +1,4 @@
-include ':rx-flux:core',
+include ':rx-flux',
 
         ':android-example:app',
         ':android-example:ui-todo-list',

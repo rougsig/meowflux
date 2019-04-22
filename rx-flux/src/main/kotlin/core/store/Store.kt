@@ -1,13 +1,13 @@
 package com.github.rougsig.rxflux.core.store
 
 import com.github.rougsig.rxflux.core.action.Action
-import com.github.rougsig.rxflux.core.middleware.Actor
+import com.github.rougsig.rxflux.core.actor.Actor
 import com.github.rougsig.rxflux.core.reducer.Reducer
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.subjects.PublishSubject
 
-class FluxStore : Observable<Action<*>>() {
+class Store : Observable<Action<*>>() {
   private val actionQueue = PublishSubject.create<Action<*>>()
 
   private val reducers = HashMap<String, Reducer<*>>()

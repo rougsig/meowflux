@@ -2,16 +2,14 @@ package com.github.rougsig.rxflux.android.domain.todolist
 
 import com.github.rougsig.rxflux.android.core.LceState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
-import com.github.rougsig.rxflux.core.action.Action
-import com.github.rougsig.rxflux.core.store.FluxStore
+import com.github.rougsig.rxflux.core.store.Store
 import io.reactivex.observers.TestObserver
 import junit.framework.TestCase
-import java.util.concurrent.TimeUnit
 
 class TestTodoListActor : TestCase() {
 
   fun testLoadTodoList() {
-    val store = FluxStore()
+    val store = Store()
 
     val reducer = TodoListReducer()
     val actor = TodoListActor(reducer, TestTodoListRepository())
@@ -51,7 +49,7 @@ class TestTodoListActor : TestCase() {
   }
 
   fun testAddTodoItem() {
-    val store = FluxStore()
+    val store = Store()
 
     val reducer = TodoListReducer()
     val actor = TodoListActor(reducer, TestTodoListRepository())
@@ -107,7 +105,7 @@ class TestTodoListActor : TestCase() {
   }
 
   fun testRemoveTodoItem() {
-    val store = FluxStore()
+    val store = Store()
 
     val reducer = TodoListReducer()
     val actor = TodoListActor(reducer, TestTodoListRepository())

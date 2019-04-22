@@ -1,4 +1,4 @@
-package com.github.rougsig.rxflux.core.middleware
+package com.github.rougsig.rxflux.core.actor
 
 import com.github.rougsig.rxflux.core.action.Action
 import io.reactivex.Observer

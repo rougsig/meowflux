@@ -1,6 +1,6 @@
 package com.github.rougsig.rxflux
 
-import com.github.rougsig.rxflux.core.store.FluxStore
+import com.github.rougsig.rxflux.core.store.Store
 import com.github.rougsig.rxflux.counter.CounterReducer
 import com.github.rougsig.rxflux.counter.CounterState
 import junit.framework.TestCase
@@ -8,7 +8,7 @@ import junit.framework.TestCase
 class CounterReducerTest : TestCase() {
 
   fun testInc() {
-    val store = FluxStore()
+    val store = Store()
     val counterReducer = CounterReducer("counter")
     store.addReducer(counterReducer)
 
@@ -18,7 +18,7 @@ class CounterReducerTest : TestCase() {
   }
 
   fun testIncBy() {
-    val store = FluxStore()
+    val store = Store()
     val counterReducer = CounterReducer("counter")
     store.addReducer(counterReducer)
 
@@ -28,7 +28,7 @@ class CounterReducerTest : TestCase() {
   }
 
   fun testMultipleCounterReducers() {
-    val store = FluxStore()
+    val store = Store()
     val catReducer = CounterReducer("cat/counter")
     val duckReducer = CounterReducer("duck/counter")
     store.addReducer(catReducer)

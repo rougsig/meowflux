@@ -11,10 +11,8 @@ dependencies {
     implementation Deps.kotlinStdLib
     implementation Deps.rxJava
     implementation Deps.rxRelay
-    api RxFluxDeps.immutable
-
 
     testImplementation Deps.unitTestLibs
 }
 
-apply from: '../../gradle-mvn-push.gradle'
+apply from: '../gradle-mvn-push.gradle'

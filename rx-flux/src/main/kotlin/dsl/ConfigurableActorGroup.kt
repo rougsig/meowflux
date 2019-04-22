@@ -1,6 +1,6 @@
 package com.github.rougsig.rxflux.dsl
 
-import com.github.rougsig.rxflux.core.middleware.*
+import com.github.rougsig.rxflux.core.actor.*
 
 abstract class ConfigurableActorGroup : ActorGroup() {
   private val _actors = mutableListOf<Actor>()

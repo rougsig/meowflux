@@ -3,8 +3,8 @@ package com.github.rougsig.rxflux.dsl
 import com.github.rougsig.rxflux.core.actor.*
 
 abstract class ConfigurableActorGroup : ActorGroup() {
-  private val _actors = mutableListOf<Actor>()
-  override val actors: List<Actor> = _actors
+  private val _actors = mutableListOf<TaskedActor>()
+  override val actors: List<TaskedActor> = _actors
 
   fun actor(
     composer: ActorTaskComposer,

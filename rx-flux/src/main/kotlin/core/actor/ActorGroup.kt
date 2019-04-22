@@ -3,8 +3,8 @@ package com.github.rougsig.rxflux.core.actor
 import com.github.rougsig.rxflux.core.action.Action
 import io.reactivex.Observer
 
-abstract class ActorGroup : Actor(FlatMapTaskComposer()) {
-  abstract val actors: List<Actor>
+abstract class ActorGroup : Actor() {
+  abstract val actors: List<TaskedActor>
 
   override fun accept(action: Action<*>) {
     actors.forEach { actor -> actor.accept(action) }

@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 
 abstract class ConfigurableActor(
   composer: ActorTaskComposer = ConcatMapActorTaskComposer()
-) : Actor(composer) {
+) : TaskedActor(composer) {
   private val _tasks = mutableListOf<ActorTask<Any>>()
   override val tasks: List<ActorTask<Any>> = _tasks
 

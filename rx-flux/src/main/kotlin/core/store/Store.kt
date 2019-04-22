@@ -2,7 +2,6 @@ package com.github.rougsig.rxflux.core.store
 
 import com.github.rougsig.rxflux.core.action.Action
 import com.github.rougsig.rxflux.core.actor.Actor
-import com.github.rougsig.rxflux.core.reducer.BaseReducer
 import com.github.rougsig.rxflux.core.reducer.Reducer
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -13,8 +12,7 @@ class Store : Observable<Action>() {
   private val actionQueue = PublishSubject.create<Action>()
 
   private val reducers = HashMap<String, Reducer<*>>()
-  private val actors = HashMap<String, Actor>()
-  private val actorDisposables = HashMap<Actor, Disposable>()
+  private val actors = HashMap<String, Pair<Actor, Disposable>>()
 
   init {
     @Suppress
@@ -24,7 +22,7 @@ class Store : Observable<Action>() {
           .forEach { reducer -> reducer.accept(action) }
 
         actors.values
-          .forEach { actor -> actor.accept(action) }
+          .forEach { (actor, _) -> actor.accept(action) }
       }
   }
 
@@ -50,16 +48,14 @@ class Store : Observable<Action>() {
     val isExists = reducers.containsKey(actor.namespace)
 
     if (!isExists) {
-      actors[actor.namespace] = actor
-      actorDisposables[actor] = Observable.wrap(actor).subscribe { dispatch(it) }
+      actors[actor.namespace] = actor to Observable.wrap(actor).subscribe { dispatch(it) }
     }
 
     return !isExists
   }
 
   fun removeActor(actor: Actor) {
-    actorDisposables[actor]?.dispose()
-    actorDisposables.remove(actor)
+    actors[actor.namespace]?.second?.dispose()
     actors.remove(actor.namespace)
   }
 

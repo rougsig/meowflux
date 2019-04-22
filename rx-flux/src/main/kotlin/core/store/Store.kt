@@ -5,6 +5,7 @@ import com.github.rougsig.rxflux.core.actor.Actor
 import com.github.rougsig.rxflux.core.reducer.Reducer
 import io.reactivex.Observable
 import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 
 class Store : Observable<Action<*>>() {
@@ -12,6 +13,7 @@ class Store : Observable<Action<*>>() {
 
   private val reducers = HashMap<String, Reducer<*>>()
   private val actors = HashMap<String, Actor>()
+  private val actorDisposables = HashMap<Actor, Disposable>()
 
   init {
     @Suppress
@@ -48,14 +50,15 @@ class Store : Observable<Action<*>>() {
 
     if (!isExists) {
       actors[actor.namespace] = actor
+      actorDisposables[actor] = actor.subscribe { dispatch(it) }
     }
-
-    actor.subscribe(actionQueue)
 
     return !isExists
   }
 
   fun removeActor(actor: Actor) {
+    actorDisposables[actor]?.dispose()
+    actorDisposables.remove(actor)
     actors.remove(actor.namespace)
   }
 

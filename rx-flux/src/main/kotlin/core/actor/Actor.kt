@@ -8,7 +8,7 @@ import io.reactivex.Observer
 import io.reactivex.functions.Consumer
 
 abstract class Actor(
-  private val composer: ActorTaskComposer
+  composer: ActorTaskComposer
 ) :
   Observable<Action<*>>(),
   Consumer<Action<*>>,

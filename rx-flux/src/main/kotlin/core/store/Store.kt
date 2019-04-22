@@ -2,14 +2,15 @@ package com.github.rougsig.rxflux.core.store
 
 import com.github.rougsig.rxflux.core.action.Action
 import com.github.rougsig.rxflux.core.actor.Actor
+import com.github.rougsig.rxflux.core.reducer.BaseReducer
 import com.github.rougsig.rxflux.core.reducer.Reducer
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 
-class Store : Observable<Action<*>>() {
-  private val actionQueue = PublishSubject.create<Action<*>>()
+class Store : Observable<Action>() {
+  private val actionQueue = PublishSubject.create<Action>()
 
   private val reducers = HashMap<String, Reducer<*>>()
   private val actors = HashMap<String, Actor>()
@@ -27,7 +28,7 @@ class Store : Observable<Action<*>>() {
       }
   }
 
-  fun dispatch(action: Action<*>) {
+  fun dispatch(action: Action) {
     actionQueue.onNext(action)
   }
 
@@ -50,7 +51,7 @@ class Store : Observable<Action<*>>() {
 
     if (!isExists) {
       actors[actor.namespace] = actor
-      actorDisposables[actor] = actor.subscribe { dispatch(it) }
+      actorDisposables[actor] = Observable.wrap(actor).subscribe { dispatch(it) }
     }
 
     return !isExists
@@ -62,7 +63,7 @@ class Store : Observable<Action<*>>() {
     actors.remove(actor.namespace)
   }
 
-  override fun subscribeActual(observer: Observer<in Action<*>>) {
+  override fun subscribeActual(observer: Observer<in Action>) {
     actionQueue.subscribe(observer)
   }
 }

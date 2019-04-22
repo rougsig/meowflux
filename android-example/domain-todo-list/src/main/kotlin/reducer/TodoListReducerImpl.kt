@@ -1,4 +1,4 @@
-package com.github.rougsig.rxflux.android.domain.todolist
+package com.github.rougsig.rxflux.android.domain.todolist.reducer
 
 import com.github.rougsig.rxflux.android.core.LceState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
@@ -10,13 +10,10 @@ private data class UpdateItemsState(val state: LceState<List<TodoItem>>) : TodoL
 private data class UpdateAddItemState(val state: LceState<Unit>) : TodoListReducerAction()
 private data class UpdateRemoveItemState(val state: LceState<Unit>) : TodoListReducerAction()
 
-class TodoListReducer @Inject constructor() : ConfigurableReducer<TodoListState>(
-  TodoListState(
-    todoListItems = null,
-    addTodoItem = null,
-    removeTodoItem = null
-  )
-) {
+internal class TodoListReducerImpl @Inject constructor() :
+  ConfigurableReducer<TodoListState>(TodoListState()),
+  TodoListReducer {
+
   init {
     mutator(UpdateItemsState::class) { state, action ->
       state.copy(todoListItems = action.state)
@@ -29,7 +26,9 @@ class TodoListReducer @Inject constructor() : ConfigurableReducer<TodoListState>
     }
   }
 
-  fun updateItemsState(state: LceState<List<TodoItem>>) = createAction { UpdateItemsState(state) }
-  fun updateAddItemState(state: LceState<Unit>) = createAction { UpdateAddItemState(state) }
-  fun updateRemoveItemState(state: LceState<Unit>) = createAction { UpdateRemoveItemState(state) }
+  override val todoList = createSelector { todoListItems }
+
+  override fun updateItemsState(state: LceState<List<TodoItem>>) = createAction { UpdateItemsState(state) }
+  override fun updateAddItemState(state: LceState<Unit>) = createAction { UpdateAddItemState(state) }
+  override fun updateRemoveItemState(state: LceState<Unit>) = createAction { UpdateRemoveItemState(state) }
 }

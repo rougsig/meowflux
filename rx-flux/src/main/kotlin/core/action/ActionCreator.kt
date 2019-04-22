@@ -11,7 +11,7 @@ interface ActionCreator {
       "$prefix-${this.javaClass.simpleName}"
     }
 
-  fun <T> createAction(block: () -> T): Action<*> {
+  fun createAction(block: () -> Any): Action {
     return Action(namespace, block.invoke())
   }
 }

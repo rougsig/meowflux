@@ -3,7 +3,7 @@ package com.github.rougsig.rxflux.android
 import android.app.Application
 import android.os.Looper
 import com.github.rougsig.rxflux.android.core.APP_SCOPE_NAME
-import com.github.rougsig.rxflux.android.domain.di.StoreModule
+import com.github.rougsig.rxflux.android.domain.StoreModule
 import com.jakewharton.threetenabp.AndroidThreeTen
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.android.schedulers.AndroidSchedulers

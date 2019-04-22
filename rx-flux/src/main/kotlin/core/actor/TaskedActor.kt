@@ -6,12 +6,12 @@ import io.reactivex.Observer
 
 abstract class TaskedActor(
   composer: ActorTaskComposer
-) : Actor() {
+) : Actor {
 
   protected open val tasks: List<ActorTask<Any>> = emptyList()
 
-  private val actionRelay = PublishRelay.create<Action<*>>()
-  private val actionQueue = PublishRelay.create<Action<*>>()
+  private val actionRelay = PublishRelay.create<Action>()
+  private val actionQueue = PublishRelay.create<Action>()
 
   init {
     @Suppress
@@ -23,11 +23,11 @@ abstract class TaskedActor(
       .subscribe(actionRelay)
   }
 
-  override fun accept(action: Action<*>) {
+  override fun accept(action: Action) {
     actionQueue.accept(action)
   }
 
-  override fun subscribeActual(observer: Observer<in Action<*>>) {
+  override fun subscribe(observer: Observer<in Action>) {
     actionRelay.subscribe(observer)
   }
 }

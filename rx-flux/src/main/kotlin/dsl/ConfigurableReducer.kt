@@ -2,12 +2,12 @@ package com.github.rougsig.rxflux.dsl
 
 import com.github.rougsig.rxflux.core.reducer.Mutator
 import com.github.rougsig.rxflux.core.reducer.MutatorImpl
-import com.github.rougsig.rxflux.core.reducer.Reducer
+import com.github.rougsig.rxflux.core.reducer.BaseReducer
 import kotlin.reflect.KClass
 
 abstract class ConfigurableReducer<S : Any>(
   initialState: S
-) : Reducer<S>(initialState) {
+) : BaseReducer<S>(initialState) {
   private val _mutators = mutableListOf<Mutator<S, Any>>()
   override val mutators: List<Mutator<S, Any>> = _mutators
 

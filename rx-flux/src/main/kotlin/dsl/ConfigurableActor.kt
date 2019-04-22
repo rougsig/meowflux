@@ -13,7 +13,7 @@ abstract class ConfigurableActor(
 
   fun <A : Any> task(
     type: KClass<A>,
-    task: (A) -> ObservableSource<Action<*>>
+    task: (A) -> ObservableSource<Action>
   ): ConfigurableActor = apply {
     _tasks.add(ActorTaskImpl(type, task))
   }

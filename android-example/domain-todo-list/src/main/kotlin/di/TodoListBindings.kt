@@ -1,8 +1,10 @@
 package com.github.rougsig.rxflux.android.domain.todolist.di
 
 import com.github.rougsig.rxflux.android.core.ToothpickModuleBindings
-import com.github.rougsig.rxflux.android.domain.todolist.TodoListActor
-import com.github.rougsig.rxflux.android.domain.todolist.TodoListReducer
+import com.github.rougsig.rxflux.android.domain.todolist.actor.TodoListActor
+import com.github.rougsig.rxflux.android.domain.todolist.actor.TodoListActorImpl
+import com.github.rougsig.rxflux.android.domain.todolist.reducer.TodoListReducer
+import com.github.rougsig.rxflux.android.domain.todolist.reducer.TodoListReducerImpl
 import com.github.rougsig.rxflux.android.repository.di.TodoListRepositoryBindings
 import toothpick.config.Module
 
@@ -11,11 +13,13 @@ object TodoListBindings : ToothpickModuleBindings {
     TodoListRepositoryBindings.bindInto(module)
 
     module
-      .bind(TodoListActor::class.java)
+      .bind(TodoListReducer::class.java)
+      .to(TodoListReducerImpl::class.java)
       .singletonInScope()
 
     module
-      .bind(TodoListReducer::class.java)
+      .bind(TodoListActor::class.java)
+      .to(TodoListActorImpl::class.java)
       .singletonInScope()
   }
 }

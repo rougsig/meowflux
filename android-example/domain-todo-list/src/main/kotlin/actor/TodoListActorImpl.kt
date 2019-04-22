@@ -1,7 +1,8 @@
-package com.github.rougsig.rxflux.android.domain.todolist
+package com.github.rougsig.rxflux.android.domain.todolist.actor
 
 import com.github.rougsig.rxflux.android.core.actionOnSuccess
 import com.github.rougsig.rxflux.android.core.toLceEventObservable
+import com.github.rougsig.rxflux.android.domain.todolist.reducer.TodoListReducer
 import com.github.rougsig.rxflux.android.repository.TodoListRepository
 import com.github.rougsig.rxflux.dsl.ConfigurableActor
 import javax.inject.Inject
@@ -11,10 +12,13 @@ private object LoadTodoList : TodoListActorAction()
 private data class AddTodoItem(val text: String) : TodoListActorAction()
 private data class RemoveTodoItem(val id: Long) : TodoListActorAction()
 
-class TodoListActor @Inject constructor(
+internal class TodoListActorImpl @Inject constructor(
   private val reducer: TodoListReducer,
   private val repository: TodoListRepository
-) : ConfigurableActor() {
+) :
+  ConfigurableActor(),
+  TodoListActor {
+
   init {
     task(AddTodoItem::class) { action ->
       repository
@@ -37,7 +41,7 @@ class TodoListActor @Inject constructor(
     }
   }
 
-  fun loadTodoList() = createAction { LoadTodoList }
-  fun addTodoItem(text: String) = createAction { AddTodoItem(text) }
-  fun removeTodoItem(id: Long) = createAction { RemoveTodoItem(id) }
+  override fun loadTodoList() = createAction { LoadTodoList }
+  override fun addTodoItem(text: String) = createAction { AddTodoItem(text) }
+  override fun removeTodoItem(id: Long) = createAction { RemoveTodoItem(id) }
 }

@@ -1,6 +1,9 @@
 package com.github.rougsig.rxflux.android.domain.todolist
 
 import com.github.rougsig.rxflux.android.core.LceState
+import com.github.rougsig.rxflux.android.domain.todolist.actor.TodoListActorImpl
+import com.github.rougsig.rxflux.android.domain.todolist.reducer.TodoListReducerImpl
+import com.github.rougsig.rxflux.android.domain.todolist.reducer.TodoListState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
 import com.github.rougsig.rxflux.core.store.Store
 import io.reactivex.observers.TestObserver
@@ -11,14 +14,14 @@ class TestTodoListActor : TestCase() {
   fun testLoadTodoList() {
     val store = Store()
 
-    val reducer = TodoListReducer()
-    val actor = TodoListActor(reducer, TestTodoListRepository())
+    val reducer = TodoListReducerImpl()
+    val actor = TodoListActorImpl(reducer, TestTodoListRepository())
 
     store.addReducer(reducer)
     store.addActor(actor)
 
     val observer = TestObserver<TodoListState>()
-    reducer.subscribe(observer)
+    reducer.stateLive.subscribe(observer)
 
     store.dispatch(actor.loadTodoList())
 
@@ -51,14 +54,14 @@ class TestTodoListActor : TestCase() {
   fun testAddTodoItem() {
     val store = Store()
 
-    val reducer = TodoListReducer()
-    val actor = TodoListActor(reducer, TestTodoListRepository())
+    val reducer = TodoListReducerImpl()
+    val actor = TodoListActorImpl(reducer, TestTodoListRepository())
 
     store.addReducer(reducer)
     store.addActor(actor)
 
     val observer = TestObserver<TodoListState>()
-    reducer.subscribe(observer)
+    reducer.stateLive.subscribe(observer)
 
     store.dispatch(actor.addTodoItem(text = "Hello World"))
 
@@ -107,14 +110,14 @@ class TestTodoListActor : TestCase() {
   fun testRemoveTodoItem() {
     val store = Store()
 
-    val reducer = TodoListReducer()
-    val actor = TodoListActor(reducer, TestTodoListRepository())
+    val reducer = TodoListReducerImpl()
+    val actor = TodoListActorImpl(reducer, TestTodoListRepository())
 
     store.addReducer(reducer)
     store.addActor(actor)
 
     val observer = TestObserver<TodoListState>()
-    reducer.subscribe(observer)
+    reducer.stateLive.subscribe(observer)
 
     store.dispatch(actor.removeTodoItem(id = 1))
 

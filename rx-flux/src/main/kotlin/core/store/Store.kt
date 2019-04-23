@@ -48,7 +48,7 @@ class Store : Observable<Action>() {
     val isExists = reducers.containsKey(actor.namespace)
 
     if (!isExists) {
-      actors[actor.namespace] = actor to Observable.wrap(actor).subscribe { dispatch(it) }
+      actors[actor.namespace] = actor to actor.actionLive.subscribe { dispatch(it) }
     }
 
     return !isExists

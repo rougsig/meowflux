@@ -1,26 +1,24 @@
 package com.github.rougsig.rxflux.core.reducer
 
 import com.github.rougsig.rxflux.core.action.Action
-import com.github.rougsig.rxflux.core.action.ActionCreator
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.functions.Consumer
 
 abstract class BaseReducer<S : Any>(
   initialState: S
-) :
-  Observable<S>(),
-  Reducer<S> {
+) : Reducer<S> {
 
   protected open val mutators: List<Mutator<S, Any>> = emptyList()
 
   private val stateRelay = BehaviorRelay.createDefault(initialState)
   private val actionQueue = PublishRelay.create<Action>()
 
-  val state: S
+  override val state: S
     get() = stateRelay.value!!
+
+  override val stateLive: Observable<S>
+    get() = stateRelay
 
   init {
     @Suppress
@@ -39,15 +37,11 @@ abstract class BaseReducer<S : Any>(
     actionQueue.accept(action)
   }
 
-  override fun subscribeActual(observer: Observer<in S>) {
-    stateRelay.subscribe(observer)
-  }
-
   override fun <T : Any> select(fieldSelector: (S) -> T?): Observable<T> {
-    return this
-      .distinctUntilChanged()
+    return stateLive
       .filter { fieldSelector(it) != null }
       .map { fieldSelector(it)!! }
+      .distinctUntilChanged()
   }
 
   fun <T> createSelector(fieldSelector: S.() -> T?): (S) -> T? {

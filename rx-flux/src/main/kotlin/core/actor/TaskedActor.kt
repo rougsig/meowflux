@@ -2,7 +2,7 @@ package com.github.rougsig.rxflux.core.actor
 
 import com.github.rougsig.rxflux.core.action.Action
 import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Observer
+import io.reactivex.Observable
 
 abstract class TaskedActor(
   composer: ActorTaskComposer
@@ -23,11 +23,9 @@ abstract class TaskedActor(
       .subscribe(actionRelay)
   }
 
+  override val actionLive: Observable<Action> = actionRelay
+
   override fun accept(action: Action) {
     actionQueue.accept(action)
-  }
-
-  override fun subscribe(observer: Observer<in Action>) {
-    actionRelay.subscribe(observer)
   }
 }

@@ -8,5 +8,8 @@ import io.reactivex.functions.Consumer
 interface Reducer<S : Any> :
   ActionCreator,
   Consumer<Action> {
+  val state: S
+  val stateLive: Observable<S>
+
   fun <T : Any> select(fieldSelector: S.() -> T?): Observable<T>
 }

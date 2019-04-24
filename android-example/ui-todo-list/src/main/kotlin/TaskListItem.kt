@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import com.airbnb.epoxy.CallbackProp
 import com.airbnb.epoxy.ModelProp
 import com.airbnb.epoxy.ModelView
 import kotlinx.android.synthetic.main.task_list_item.view.*
@@ -21,6 +22,11 @@ internal class TaskListItem @JvmOverloads constructor(
   @ModelProp
   fun setText(text: String) {
     task_list_item_title.text = text
+  }
+
+  @CallbackProp
+  fun setOnClick(listener: (() -> Unit)?) {
+    if (listener != null) task_list_item.setOnClickListener { listener.invoke() }
   }
 }
 

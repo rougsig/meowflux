@@ -8,6 +8,8 @@ import com.github.rougsig.rxflux.android.core.instance
 import com.github.rougsig.rxflux.android.enitity.TodoItem
 import com.github.rougsig.rxflux.android.ui.core.ScopedMviController
 import com.github.rougsig.rxflux.android.ui.todolist.di.ConnectModule
+import com.jakewharton.rxbinding3.view.clicks
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.task_list_controller.*
 import toothpick.config.Module
 
@@ -34,6 +36,14 @@ internal class TaskListController :
     task_list_loading.isVisible = state.isLoading
     task_list_empty_list.isVisible = state.isContent && state.content.isNullOrEmpty()
     if (state.isContent) epoxyController.setData(state.asContent())
+  }
+
+  override fun showCreateTodoItemIntent(): Observable<Unit> {
+    return task_list_create.clicks()
+  }
+
+  override fun showTodoItemDetailsIntent(): Observable<Long> {
+    return epoxyController.itemClicks()
   }
 
   override fun createPresenter(): TaskListPresenter {

@@ -4,9 +4,13 @@ import com.github.dimsuz.diffdispatcher.annotations.DiffElement
 import com.github.rougsig.rxflux.android.core.LceState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
 import com.github.rougsig.rxflux.android.ui.core.MviView
+import io.reactivex.Observable
 
 internal interface TaskListScreen {
-  interface View : MviView<ViewState>
+  interface View : MviView<ViewState> {
+    fun showCreateTodoItemIntent(): Observable<Unit>
+    fun showTodoItemDetailsIntent(): Observable<Long>
+  }
 
   @DiffElement(Renderer::class)
   data class ViewState(

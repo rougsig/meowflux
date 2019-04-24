@@ -13,7 +13,17 @@ public final class AndroidDeps {
             Deps.rxRelay,
             "com.jakewharton.threetenabp:threetenabp:1.2.0",
             "io.reactivex.rxjava2:rxandroid:2.1.0",
-            "com.jakewharton.timber:timber:4.7.1"
+            "com.jakewharton.timber:timber:4.7.1",
+            "com.jakewharton.rxbinding3:rxbinding:3.0.0-alpha2",
+            "com.jakewharton.rxbinding3:rxbinding-core:3.0.0-alpha2",
+            "com.jakewharton.rxbinding3:rxbinding-appcompat:3.0.0-alpha2",
+            "com.jakewharton.rxbinding3:rxbinding-drawerlayout:3.0.0-alpha2",
+            "com.jakewharton.rxbinding3:rxbinding-leanback:3.0.0-alpha2",
+            "com.jakewharton.rxbinding3:rxbinding-recyclerview:3.0.0-alpha2",
+            "com.jakewharton.rxbinding3:rxbinding-slidingpanelayout:3.0.0-alpha2",
+            "com.jakewharton.rxbinding3:rxbinding-swiperefreshlayout:3.0.0-alpha2",
+            "com.jakewharton.rxbinding3:rxbinding-viewpager:3.0.0-alpha2",
+            "com.jakewharton.rxbinding3:rxbinding-material:3.0.0-alpha2"
     };
 
     public static final String supportAnnotations = "androidx.annotation:annotation:1.1.0-alpha02";

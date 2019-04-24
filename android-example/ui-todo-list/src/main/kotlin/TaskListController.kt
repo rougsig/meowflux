@@ -32,9 +32,8 @@ internal class TaskListController :
 
   override fun renderTodoList(state: LceState<List<TodoItem>>) {
     task_list_loading.isVisible = state.isLoading
-    if (state.isContent) {
-      epoxyController.setData(state.asContent())
-    }
+    task_list_empty_list.isVisible = state.isContent && state.content.isNullOrEmpty()
+    if (state.isContent) epoxyController.setData(state.asContent())
   }
 
   override fun createPresenter(): TaskListPresenter {

@@ -6,6 +6,8 @@ import javax.inject.Inject
 
 internal interface DispatchProps {
   val loadTodoList: () -> Unit
+  val showCreateTodoItemScreen: () -> Unit
+  val showTodoItemDetailsScreen: (id: Long) -> Unit
 }
 
 internal class DispatchPropsImpl @Inject constructor(
@@ -13,4 +15,6 @@ internal class DispatchPropsImpl @Inject constructor(
   private val todoListActor: TodoListActor
 ) : DispatchProps {
   override val loadTodoList = { store.dispatch(todoListActor.loadTodoList()) }
+  override val showCreateTodoItemScreen = {}
+  override val showTodoItemDetailsScreen = { id: Long -> }
 }

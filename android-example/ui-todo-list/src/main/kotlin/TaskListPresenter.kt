@@ -4,8 +4,8 @@ import com.github.rougsig.actionsdispatcher.annotations.ActionElement
 import com.github.rougsig.rxflux.android.core.AppSchedulers
 import com.github.rougsig.rxflux.android.core.LceState
 import com.github.rougsig.rxflux.android.enitity.TodoItem
-import com.github.rougsig.rxflux.android.ui.core.BasePresenter
-import com.github.rougsig.rxflux.android.ui.core.command
+import com.github.rougsig.rxflux.android.ui.core.mvi.BasePresenter
+import com.github.rougsig.rxflux.android.ui.core.mvi.command
 import com.github.rougsig.rxflux.android.ui.todolist.TaskListScreen.View
 import com.github.rougsig.rxflux.android.ui.todolist.TaskListScreen.ViewState
 import com.github.rougsig.rxflux.android.ui.todolist.di.DispatchProps

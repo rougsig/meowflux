@@ -19,21 +19,21 @@ internal class TodoListActorImpl @Inject constructor(
   TodoListActor {
 
   init {
-    task(AddTodoItem::class) { action ->
+    asyncTask(AddTodoItem::class) { action ->
       repository
         .addTodoItem(action.text)
         .toLceEventObservable { reducer.updateAddItemState(it) }
         .actionOnSuccess { loadTodoList() }
     }
 
-    task(RemoveTodoItem::class) { action ->
+    asyncTask(RemoveTodoItem::class) { action ->
       repository
         .removeTodoItem(action.id)
         .toLceEventObservable { reducer.updateRemoveItemState(it) }
         .actionOnSuccess { loadTodoList() }
     }
 
-    task(LoadTodoList::class) { _ ->
+    asyncTask(LoadTodoList::class) { _ ->
       repository
         .getTodoList()
         .toLceEventObservable { reducer.updateItemsState(it) }

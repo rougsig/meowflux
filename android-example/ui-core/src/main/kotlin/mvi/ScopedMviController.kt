@@ -1,4 +1,4 @@
-package com.github.rougsig.rxflux.android.ui.core
+package com.github.rougsig.rxflux.android.ui.core.mvi
 
 import android.content.Context
 import android.os.Bundle

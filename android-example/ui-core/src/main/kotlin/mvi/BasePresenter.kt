@@ -1,4 +1,4 @@
-package com.github.rougsig.rxflux.android.ui.core
+package com.github.rougsig.rxflux.android.ui.core.mvi
 
 import com.github.rougsig.actionsdispatcher.runtime.BaseActionsReducer
 import com.github.rougsig.rxflux.android.core.AppSchedulers

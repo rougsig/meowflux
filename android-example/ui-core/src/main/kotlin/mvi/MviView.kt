@@ -1,4 +1,4 @@
-package com.github.rougsig.rxflux.android.ui.core
+package com.github.rougsig.rxflux.android.ui.core.mvi
 
 import com.hannesdorfmann.mosby3.mvp.MvpView
 

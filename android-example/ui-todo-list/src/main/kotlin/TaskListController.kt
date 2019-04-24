@@ -6,7 +6,7 @@ import com.bluelinelabs.conductor.Controller
 import com.github.rougsig.rxflux.android.core.LceState
 import com.github.rougsig.rxflux.android.core.instance
 import com.github.rougsig.rxflux.android.enitity.TodoItem
-import com.github.rougsig.rxflux.android.ui.core.ScopedMviController
+import com.github.rougsig.rxflux.android.ui.core.mvi.ScopedMviController
 import com.github.rougsig.rxflux.android.ui.todolist.di.ConnectModule
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.Observable

@@ -1,4 +1,4 @@
-package com.github.rougsig.rxflux.android.ui.core
+package com.github.rougsig.rxflux.android.ui.core.mvi
 
 typealias Command<T> = () -> T?
 

@@ -13,5 +13,5 @@ internal interface StateProps {
 internal class StatePropsImpl @Inject constructor(
   private val reducer: TodoListReducer
 ) : StateProps {
-  override val todoList = reducer.select(reducer.todoList)
+  override val todoList = reducer.selectLive(reducer.todoList)
 }

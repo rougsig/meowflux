@@ -2,10 +2,8 @@ package com.github.rougsig.rxflux.counter
 
 import com.github.rougsig.rxflux.dsl.ConfigurableReducer
 
-private sealed class Action
-
-private data class Inc(val incBy: Int) : Action()
-private data class Dec(val decBy: Int) : Action()
+private data class Inc(val incBy: Int)
+private data class Dec(val decBy: Int)
 
 class CounterReducer(
   override val prefix: String

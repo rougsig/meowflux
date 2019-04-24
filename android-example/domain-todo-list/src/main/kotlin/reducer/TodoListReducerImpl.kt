@@ -5,10 +5,9 @@ import com.github.rougsig.rxflux.android.enitity.TodoItem
 import com.github.rougsig.rxflux.dsl.ConfigurableReducer
 import javax.inject.Inject
 
-private sealed class TodoListReducerAction
-private data class UpdateItemsState(val state: LceState<List<TodoItem>>) : TodoListReducerAction()
-private data class UpdateAddItemState(val state: LceState<Unit>) : TodoListReducerAction()
-private data class UpdateRemoveItemState(val state: LceState<Unit>) : TodoListReducerAction()
+private data class UpdateItemsState(val state: LceState<List<TodoItem>>)
+private data class UpdateAddItemState(val state: LceState<Unit>)
+private data class UpdateRemoveItemState(val state: LceState<Unit>)
 
 internal class TodoListReducerImpl @Inject constructor() :
   ConfigurableReducer<TodoListState>(TodoListState()),

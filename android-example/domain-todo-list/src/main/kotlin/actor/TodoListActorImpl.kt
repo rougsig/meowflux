@@ -7,10 +7,9 @@ import com.github.rougsig.rxflux.android.repository.TodoListRepository
 import com.github.rougsig.rxflux.dsl.ConfigurableActor
 import javax.inject.Inject
 
-private sealed class TodoListActorAction
-private object LoadTodoList : TodoListActorAction()
-private data class AddTodoItem(val text: String) : TodoListActorAction()
-private data class RemoveTodoItem(val id: Long) : TodoListActorAction()
+private object LoadTodoList
+private data class AddTodoItem(val text: String)
+private data class RemoveTodoItem(val id: Long)
 
 internal class TodoListActorImpl @Inject constructor(
   private val reducer: TodoListReducer,

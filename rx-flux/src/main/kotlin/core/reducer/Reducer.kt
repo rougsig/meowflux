@@ -11,5 +11,6 @@ interface Reducer<S : Any> :
   val state: S
   val stateLive: Observable<S>
 
-  fun <T : Any> select(fieldSelector: S.() -> T?): Observable<T>
+  fun <T : Any> selectLive(fieldSelector: S.() -> T?): Observable<T>
+  fun <T : Any> select(fieldSelector: S.() -> T?): T?
 }

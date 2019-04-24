@@ -37,11 +37,15 @@ abstract class BaseReducer<S : Any>(
     actionQueue.accept(action)
   }
 
-  override fun <T : Any> select(fieldSelector: (S) -> T?): Observable<T> {
+  override fun <T : Any> selectLive(fieldSelector: (S) -> T?): Observable<T> {
     return stateLive
       .filter { fieldSelector(it) != null }
       .map { fieldSelector(it)!! }
       .distinctUntilChanged()
+  }
+
+  override fun <T : Any> select(fieldSelector: (S) -> T?): T? {
+    return fieldSelector(state)
   }
 
   fun <T> createSelector(fieldSelector: S.() -> T?): (S) -> T? {

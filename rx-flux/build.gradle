@@ -1,6 +1,3 @@
-import com.github.rougsig.Deps
-import com.github.rougsig.RxFluxDeps
-
 apply plugin: 'kotlin'
 
 repositories {
@@ -8,11 +5,12 @@ repositories {
 }
 
 dependencies {
-    implementation Deps.kotlinStdLib
-    implementation Deps.rxJava
-    implementation Deps.rxRelay
+    implementation "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.41"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.4"
+    implementation "com.jakewharton.rxrelay2:rxrelay:2.1.0"
 
-    testImplementation Deps.unitTestLibs
+    testImplementation "org.testng:testng:6.10"
+    testImplementation "org.assertj:assertj-core:3.6.2"
 }
 
 apply from: '../gradle-mvn-push.gradle'

@@ -18,10 +18,10 @@ class Store<S : Any>(
 
   fun <T : Any> bind(
     factory: EventFactory<T>,
-    block: (S, T) -> S
+    handler: (S, T) -> S
   ): Store<S> {
-    subscribes.add(factory.map { factory.name to it }.subscribe(eventsRelay))
-    handlers[factory.name] = block as (S, Any) -> S
+    subscribes.add(factory.events.map { factory.name to it }.subscribe(eventsRelay))
+    handlers[factory.name] = handler as (S, Any) -> S
     return this
   }
 
@@ -33,4 +33,3 @@ class Store<S : Any>(
     return subscribes.dispose()
   }
 }
-

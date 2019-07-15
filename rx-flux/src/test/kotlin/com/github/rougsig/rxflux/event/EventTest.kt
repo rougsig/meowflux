@@ -10,7 +10,7 @@ class EventTest {
     val testObserver = TestObserver.create<Int>()
     val click = createEvent<Int>()
 
-    click.subscribe(testObserver)
+    click.events.subscribe(testObserver)
     // Act
     click(1)
     click(2)

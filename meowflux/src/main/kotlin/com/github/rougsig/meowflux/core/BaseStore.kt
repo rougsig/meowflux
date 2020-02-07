@@ -27,7 +27,7 @@ class BaseStore<S : Any> constructor(
   init {
     initialState?.let(stateChannel::sendBlocking)
     dispatcher = middlewares.fold<Middleware<S>, Dispatcher>(::dispatchInternal) { dispatcher, middleware ->
-      middleware(dispatcher, ::getState, ::dispatchInternal)
+      middleware(::dispatchInternal, ::getState, dispatcher)
     }
     dispatch(MeowFluxInit)
   }

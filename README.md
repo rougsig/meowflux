@@ -1,5 +1,5 @@
-# rxflux
+# meowflux
 
 ```gradle
-implementation 'com.github.rougsig:rxflux-core:1.0.0'
+implementation 'com.github.rougsig:meowflux-core:1.0.0'
 ```

@@ -26,8 +26,8 @@ class BaseStore<S : Any> constructor(
 
   init {
     initialState?.let(stateChannel::sendBlocking)
-    dispatcher = middlewares.fold<Middleware<S>, Dispatcher>(::dispatchInternal) { dispatcher, middleware ->
-      middleware(::dispatchInternal, ::getState, dispatcher)
+    dispatcher = middlewares.fold<Middleware<S>, Dispatcher>(::dispatchInternal) { nextDispatcher, middleware ->
+      middleware(::dispatchRoot, ::getState, nextDispatcher)
     }
     dispatch(MeowFluxInit)
   }
@@ -37,7 +37,11 @@ class BaseStore<S : Any> constructor(
   }
 
   override fun dispatch(action: Action): Job {
-    return storeScope.launch(context) { dispatcher(action) }
+    return storeScope.launch(context) { dispatchRoot(action) }
+  }
+
+  private suspend fun dispatchRoot(action: Action) {
+    dispatcher(action)
   }
 
   private suspend fun dispatchInternal(action: Action) {

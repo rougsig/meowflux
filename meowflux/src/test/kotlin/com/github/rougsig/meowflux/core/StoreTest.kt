@@ -1,21 +1,17 @@
-package com.github.rougsig.meowflux
+package com.github.rougsig.meowflux.core
 
-import com.github.rougsig.meowflux.core.MeowFluxInit
-import com.github.rougsig.meowflux.core.Middleware
-import com.github.rougsig.meowflux.core.createStore
-import com.github.rougsig.meowflux.fakes.CatCounter
-import com.github.rougsig.meowflux.fakes.CatCounterAction.Increment
-import com.github.rougsig.meowflux.fakes.CatCounterAction.SetValue
-import com.github.rougsig.meowflux.fakes.FakeReducer
-import com.github.rougsig.meowflux.fakes.catCounterReducer
-import com.github.rougsig.meowflux.fakes.duplicateMiddleware
+import com.github.rougsig.meowflux.core.fakes.CatCounter
+import com.github.rougsig.meowflux.core.fakes.CatCounterAction.Increment
+import com.github.rougsig.meowflux.core.fakes.CatCounterAction.SetValue
+import com.github.rougsig.meowflux.core.fakes.FakeReducer
+import com.github.rougsig.meowflux.core.fakes.catCounterReducer
+import com.github.rougsig.meowflux.core.fakes.duplicateMiddleware
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import org.assertj.core.api.Assertions.assertThat
 import org.testng.annotations.Test
 import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 
 @FlowPreview

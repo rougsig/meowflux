@@ -1,8 +1,8 @@
-package com.github.rougsig.meowflux.fakes
+package com.github.rougsig.meowflux.core.fakes
 
 import com.github.rougsig.meowflux.core.Action
 import com.github.rougsig.meowflux.extension.createTypedReducer
-import com.github.rougsig.meowflux.fakes.CatCounterAction.*
+import com.github.rougsig.meowflux.core.fakes.CatCounterAction.*
 
 data class CatCounter(
   val catCount: Int = 0

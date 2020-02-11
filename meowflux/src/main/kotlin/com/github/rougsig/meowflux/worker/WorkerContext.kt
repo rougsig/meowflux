@@ -1,9 +1,9 @@
-package com.github.rougsig.meowflux.saga
+package com.github.rougsig.meowflux.worker
 
 import com.github.rougsig.meowflux.core.Action
 import com.github.rougsig.meowflux.core.Dispatcher
 
-class SagaWorkerContext<S : Any> internal constructor(
+class WorkerContext<S : Any>(
   private val root: Dispatcher,
   private val getState: () -> S
 ) {

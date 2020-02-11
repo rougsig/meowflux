@@ -1,7 +1,8 @@
 package com.github.rougsig.meowflux
 
-import com.github.rougsig.meowflux.core.BaseStore
 import com.github.rougsig.meowflux.core.MeowFluxInit
+import com.github.rougsig.meowflux.core.Middleware
+import com.github.rougsig.meowflux.core.createStore
 import com.github.rougsig.meowflux.fakes.CatCounter
 import com.github.rougsig.meowflux.fakes.CatCounterAction.Increment
 import com.github.rougsig.meowflux.fakes.CatCounterAction.SetValue
@@ -14,18 +15,20 @@ import kotlinx.coroutines.flow.take
 import org.assertj.core.api.Assertions.assertThat
 import org.testng.annotations.Test
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 
 @FlowPreview
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
-class StoreTest {
+class StoreTest : CoroutineScope by GlobalScope {
+
   @Test
   fun `on init should send init action`() {
     // Arrange
     val reducer = FakeReducer()
-    BaseStore(
-      storeScope = GlobalScope,
+    createStore(
+      initialState = Unit,
       reducer = reducer
     )
 
@@ -40,10 +43,9 @@ class StoreTest {
   @Test
   fun `on dispatch action should be processed by reducer`() {
     // Arrange
-    val store = BaseStore(
-      storeScope = GlobalScope,
-      reducer = catCounterReducer,
-      initialState = CatCounter()
+    val store = createStore(
+      initialState = CatCounter(),
+      reducer = catCounterReducer
     )
 
     // Act
@@ -59,35 +61,35 @@ class StoreTest {
   @Test
   fun `dispatch from multiply thread should be not throw ConcurrentModificationException`() {
     // Arrange
-    val store = BaseStore(
-      storeScope = GlobalScope,
-      reducer = catCounterReducer,
-      initialState = CatCounter()
+    val store = createStore(
+      initialState = CatCounter(),
+      reducer = catCounterReducer
     )
 
     // Act
-    repeat(32) {
+    (0..255).map {
       thread {
-        runBlocking { store.dispatch(Increment) }
-      }.join()
-    }
+        runBlocking { store.dispatch(Increment).join() }
+      }
+    }.forEach(Thread::join)
 
     // Assert
     assertThat(store.getState())
-      .isEqualTo(CatCounter(catCount = 32))
+      .isEqualTo(CatCounter(catCount = 256))
   }
 
   @Test
   fun `updated state should be send to state flow`() {
     // Arrange
-    val store = BaseStore(
-      storeScope = GlobalScope,
-      reducer = catCounterReducer,
-      initialState = CatCounter()
+    val store = createStore(
+      initialState = CatCounter(),
+      reducer = catCounterReducer
     )
 
     // Act
-    store.dispatch(SetValue(10))
+    runBlocking {
+      store.dispatch(SetValue(10)).join()
+    }
 
     // Assert
     val items = runBlocking {
@@ -103,11 +105,10 @@ class StoreTest {
   @Test
   fun `on dispatch action should be processed by middleware`() {
     // Arrange
-    val store = BaseStore(
-      storeScope = GlobalScope,
-      reducer = catCounterReducer,
+    val store = createStore(
       initialState = CatCounter(),
-      middlewares = listOf(duplicateMiddleware)
+      reducer = catCounterReducer,
+      middleware = listOf(duplicateMiddleware)
     )
 
     // Act

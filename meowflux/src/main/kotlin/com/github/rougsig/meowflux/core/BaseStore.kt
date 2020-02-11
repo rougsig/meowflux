@@ -3,52 +3,35 @@ package com.github.rougsig.meowflux.core
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.sendBlocking
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 
 @FlowPreview
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
-class BaseStore<S : Any> constructor(
-  private val storeScope: CoroutineScope,
+internal class BaseStore<S : Any>(
+  private val scope: CoroutineScope,
   private val reducer: Reducer<S>,
   initialState: S? = null,
-  middlewares: List<Middleware<S>> = emptyList(),
-  storeName: String = "Store"
-) : Store<S> {
-  private val context = newSingleThreadContext(storeName)
-  private var isDispatching = false
+  middleware: List<Middleware<S>> = emptyList()
+) : Store<S>, CoroutineScope by scope + newSingleThreadContext("Store") {
   private val stateChannel = ConflatedBroadcastChannel<S>()
 
-  private val dispatcher: Dispatcher
-
-  override val stateFlow: Flow<S> = stateChannel.asFlow()
-
-  init {
-    initialState?.let(stateChannel::sendBlocking)
-    dispatcher = middlewares.fold<Middleware<S>, Dispatcher>(::dispatchInternal) { nextDispatcher, middleware ->
-      middleware(::dispatchRoot, ::getState, nextDispatcher)
-    }
-    dispatch(MeowFluxInit)
-  }
-
-  override fun getState(): S {
-    return stateChannel.value
-  }
-
-  override fun dispatch(action: Action): Job {
-    return storeScope.launch(context) { dispatchRoot(action) }
+  private val dispatcher = middleware.reversed().fold<Middleware<S>, Dispatcher>({ action ->
+    stateChannel.send(reducer(action, stateChannel.valueOrNull))
+  }) { prevDispatcher, nextMiddleware ->
+    nextMiddleware(::dispatchRoot, stateChannel::value, prevDispatcher)
   }
 
   private suspend fun dispatchRoot(action: Action) {
     dispatcher(action)
   }
 
-  private suspend fun dispatchInternal(action: Action) {
-    if (isDispatching) error("ConcurrentModificationException: MeowFlux now isDispatching")
-
-    isDispatching = true
-    stateChannel.send(reducer(action, stateChannel.valueOrNull))
-    isDispatching = false
+  init {
+    initialState?.let(stateChannel::sendBlocking)
+    dispatch(MeowFluxInit)
   }
+
+  override fun getState() = stateChannel.value
+  override val stateFlow = stateChannel.asFlow()
+  override fun dispatch(action: Action) = launch { dispatcher(action) }
 }

@@ -1,11 +1,8 @@
 package com.github.rougsig.meowflux.core
 
-import com.github.rougsig.meowflux.core.fakes.CatCounter
+import com.github.rougsig.meowflux.core.fakes.*
 import com.github.rougsig.meowflux.core.fakes.CatCounterAction.Increment
 import com.github.rougsig.meowflux.core.fakes.CatCounterAction.SetValue
-import com.github.rougsig.meowflux.core.fakes.FakeReducer
-import com.github.rougsig.meowflux.core.fakes.catCounterReducer
-import com.github.rougsig.meowflux.core.fakes.duplicateMiddleware
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
@@ -17,13 +14,13 @@ import kotlin.concurrent.thread
 @FlowPreview
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
-class StoreTest : CoroutineScope by GlobalScope {
+class StoreTest {
 
   @Test
   fun `on init should send init action`() {
     // Arrange
     val reducer = FakeReducer()
-    createStore(
+    BaseStore(
       initialState = Unit,
       reducer = reducer
     )
@@ -39,15 +36,13 @@ class StoreTest : CoroutineScope by GlobalScope {
   @Test
   fun `on dispatch action should be processed by reducer`() {
     // Arrange
-    val store = createStore(
+    val store = BaseStore(
       initialState = CatCounter(),
       reducer = catCounterReducer
     )
 
     // Act
-    runBlocking {
-      store.dispatch(SetValue(10)).join()
-    }
+    store.dispatch(SetValue(10))
 
     // Assert
     assertThat(store.getState())
@@ -57,7 +52,7 @@ class StoreTest : CoroutineScope by GlobalScope {
   @Test
   fun `dispatch from multiply thread should be not throw ConcurrentModificationException`() {
     // Arrange
-    val store = createStore(
+    val store = BaseStore(
       initialState = CatCounter(),
       reducer = catCounterReducer
     )
@@ -65,7 +60,7 @@ class StoreTest : CoroutineScope by GlobalScope {
     // Act
     (0..255).map {
       thread {
-        runBlocking { store.dispatch(Increment).join() }
+        store.dispatch(Increment)
       }
     }.forEach(Thread::join)
 
@@ -77,23 +72,19 @@ class StoreTest : CoroutineScope by GlobalScope {
   @Test
   fun `updated state should be send to state flow`() {
     // Arrange
-    val store = createStore(
+    val items = LinkedList<Any>()
+    val store = BaseStore(
       initialState = CatCounter(),
       reducer = catCounterReducer
     )
+    store.subscribe {
+      items.add(it)
+    }
 
     // Act
-    runBlocking {
-      store.dispatch(SetValue(10)).join()
-    }
+    store.dispatch(SetValue(10))
 
     // Assert
-    val items = runBlocking {
-      val items = LinkedList<Any>()
-      store.stateFlow.take(1).collect { items.add(it) }
-      items
-    }
-
     assertThat(items)
       .containsExactly(CatCounter(catCount = 10))
   }
@@ -101,16 +92,14 @@ class StoreTest : CoroutineScope by GlobalScope {
   @Test
   fun `on dispatch action should be processed by middleware`() {
     // Arrange
-    val store = createStore(
+    val store = BaseStore(
       initialState = CatCounter(),
       reducer = catCounterReducer,
       middleware = listOf(duplicateMiddleware)
     )
 
     // Act
-    runBlocking {
-      store.dispatch(Increment).join()
-    }
+    store.dispatch(Increment)
 
     // Assert
     assertThat(store.getState())

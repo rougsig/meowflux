@@ -1,9 +1,7 @@
 package com.github.rougsig.meowflux.core
 
-import kotlinx.coroutines.Job
-
 interface StoreDispatcher {
-  fun dispatch(action: Action): Job
+  fun dispatch(action: Action)
 }
 
-typealias Dispatcher = suspend (action: Action) -> Unit
+typealias Dispatcher = (action: Action) -> Unit

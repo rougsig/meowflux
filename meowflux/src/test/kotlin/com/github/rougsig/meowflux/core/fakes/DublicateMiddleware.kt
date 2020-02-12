@@ -2,9 +2,11 @@ package com.github.rougsig.meowflux.core.fakes
 
 import com.github.rougsig.meowflux.core.Middleware
 
-val duplicateMiddleware: Middleware<CatCounter> = { _, _, next ->
-  { action ->
-    next(action)
-    next(action)
+val duplicateMiddleware: Middleware<CatCounter> = { _, _ ->
+  { next ->
+    { action ->
+      next(action)
+      next(action)
+    }
   }
 }

@@ -1,15 +1,10 @@
 package com.github.rougsig.meowflux.worker
 
 import com.github.rougsig.meowflux.core.Action
-import com.github.rougsig.meowflux.core.Dispatcher
-import com.github.rougsig.meowflux.core.Middleware
-import com.github.rougsig.meowflux.core.createStore
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flow
-import kotlin.coroutines.coroutineContext
-import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 
 inline fun <reified A : Action, S : Any> takeLatest(
   timeoutMillis: Long,

@@ -14,7 +14,7 @@ import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
 inline fun <reified A : Action, S : Any> takeLatest(
   timeoutMillis: Long,
   crossinline worker: suspend WorkerContext<S>.(action: A) -> Unit
-): Worker<S> = { context, next ->
+) = createWorker<S> { context, next ->
   var job: Job? = null
   { action ->
     if (action is A) {

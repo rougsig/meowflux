@@ -10,7 +10,7 @@ class WorkerMiddleware<S : Any>(vararg workers: Worker<S>) : Middleware<S> {
     val context = WorkerContext(dispatch, getState)
     return { action ->
       workers.fold(next) { acc, worker ->
-        worker(context, acc)
+        worker.work(context, acc)
       }(action)
     }
   }

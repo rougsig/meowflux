@@ -6,8 +6,8 @@ import com.github.rougsig.meowflux.core.Middleware
 
 inline fun <reified A : Action, S : Any> takeEvery(
   crossinline worker: suspend WorkerContext<S>.(action: A) -> Unit
-): Middleware<S> = { root, getState, next ->
-  val context = WorkerContext(root, getState)
+): Middleware<S> = { dispatch, getState, next ->
+  val context = WorkerContext(dispatch, getState)
   val dispatcher: Dispatcher = { action ->
     if (action is A) context.worker(action)
     else next(action)

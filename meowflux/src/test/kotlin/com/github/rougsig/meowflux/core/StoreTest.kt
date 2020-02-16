@@ -23,7 +23,7 @@ class StoreTest : CoroutineScope by GlobalScope {
   fun `on init should send init action`() {
     // Arrange
     val reducer = FakeReducer()
-    createStore(
+    Store(
       initialState = Unit,
       reducer = reducer
     )
@@ -39,7 +39,7 @@ class StoreTest : CoroutineScope by GlobalScope {
   @Test
   fun `on dispatch action should be processed by reducer`() {
     // Arrange
-    val store = createStore(
+    val store = Store(
       initialState = CatCounter(),
       reducer = catCounterReducer
     )
@@ -57,7 +57,7 @@ class StoreTest : CoroutineScope by GlobalScope {
   @Test
   fun `dispatch from multiply thread should be not throw ConcurrentModificationException`() {
     // Arrange
-    val store = createStore(
+    val store = Store(
       initialState = CatCounter(),
       reducer = catCounterReducer
     )
@@ -77,7 +77,7 @@ class StoreTest : CoroutineScope by GlobalScope {
   @Test
   fun `updated state should be send to state flow`() {
     // Arrange
-    val store = createStore(
+    val store = Store(
       initialState = CatCounter(),
       reducer = catCounterReducer
     )
@@ -101,7 +101,7 @@ class StoreTest : CoroutineScope by GlobalScope {
   @Test
   fun `on dispatch action should be processed by middleware`() {
     // Arrange
-    val store = createStore(
+    val store = Store(
       initialState = CatCounter(),
       reducer = catCounterReducer,
       middleware = listOf(duplicateMiddleware)

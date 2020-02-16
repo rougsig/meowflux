@@ -35,3 +35,13 @@ internal class BaseStore<S : Any>(
   override val stateFlow = stateChannel.asFlow()
   override fun dispatch(action: Action) = launch { dispatcher(action) }
 }
+
+@FlowPreview
+@ObsoleteCoroutinesApi
+@ExperimentalCoroutinesApi
+@Suppress("FunctionName")
+fun <S : Any> CoroutineScope.Store(
+  reducer: Reducer<S>,
+  initialState: S? = null,
+  middleware: List<Middleware<S>> = emptyList()
+): Store<S> = BaseStore(this, reducer, initialState, middleware)

@@ -1,4 +1,4 @@
-package com.github.rougsig.meowflux.core.fakes
+package com.github.rougsig.meowflux.fakes
 
 import com.github.rougsig.meowflux.core.Action
 import com.github.rougsig.meowflux.core.Reducer

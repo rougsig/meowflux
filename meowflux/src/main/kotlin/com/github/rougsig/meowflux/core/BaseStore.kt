@@ -19,7 +19,7 @@ internal class BaseStore<S : Any>(
   private val dispatcher = middleware.reversed().fold<Middleware<S>, Dispatcher>({ action ->
     stateChannel.send(reducer(action, stateChannel.valueOrNull))
   }) { prevDispatcher, nextMiddleware ->
-    nextMiddleware(::dispatchRoot, stateChannel::value, prevDispatcher)
+    nextMiddleware(this, ::dispatchRoot, stateChannel::value, prevDispatcher)
   }
 
   private suspend fun dispatchRoot(action: Action) {

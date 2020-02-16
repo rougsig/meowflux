@@ -6,8 +6,7 @@ interface Worker<A : Action, S : Any> {
   suspend fun WorkerContext<S>.work(action: A)
 }
 
-@Suppress("FunctionName")
-fun <A : Action, S : Any> Worker(
+fun <A : Action, S : Any> worker(
   work: suspend WorkerContext<S>.(action: A) -> Unit
 ): Worker<A, S> = object : Worker<A, S> {
   override suspend fun WorkerContext<S>.work(action: A) {

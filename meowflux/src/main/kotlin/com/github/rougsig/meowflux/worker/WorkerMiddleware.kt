@@ -12,17 +12,14 @@ import kotlinx.coroutines.launch
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class WorkerMiddleware<S : Any>(
-  private val scope: CoroutineScope,
-  private val watchers: List<Watcher<*, S>>
-) : Middleware<S> {
-  override fun invoke(dispatch: Dispatcher, getState: () -> S, next: Dispatcher): Dispatcher {
+class WorkerMiddleware<S : Any>(private val watchers: List<Watcher<*, S>>) : Middleware<S> {
+  override fun invoke(storeScope: CoroutineScope, dispatch: Dispatcher, getState: () -> S, next: Dispatcher): Dispatcher {
     val context = WorkerContext(dispatch, getState)
     val channel = BroadcastChannel<Action>(128)
     val flow = channel.asFlow()
 
     watchers.forEach { watcher ->
-      scope.launch {
+      storeScope.launch {
         watcher.apply {
           flow.watch(context)
         }
@@ -36,11 +33,4 @@ class WorkerMiddleware<S : Any>(
       next(action)
     }
   }
-}
-
-@FlowPreview
-@ExperimentalCoroutinesApi
-@Suppress("FunctionName")
-fun <S : Any> CoroutineScope.WorkerMiddleware(vararg watchers: Watcher<*, S>): Middleware<S> {
-  return WorkerMiddleware(this, watchers.toList())
 }

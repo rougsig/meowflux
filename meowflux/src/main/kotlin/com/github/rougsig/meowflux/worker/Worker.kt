@@ -13,3 +13,4 @@ fun <A : Action, S : Any> worker(
     work(action)
   }
 }
+

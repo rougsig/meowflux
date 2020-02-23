@@ -1,11 +1,15 @@
 package com.github.rougsig.meowflux.core
 
-import com.github.rougsig.meowflux.fakes.CatCounter
+import com.github.rougsig.meowflux.extension.CombinedReducer
+import com.github.rougsig.meowflux.extension.TypedReducer
+import com.github.rougsig.meowflux.fakes.*
 import com.github.rougsig.meowflux.fakes.CatCounterAction.Increment
 import com.github.rougsig.meowflux.fakes.CatCounterAction.SetValue
-import com.github.rougsig.meowflux.fakes.FakeReducer
-import com.github.rougsig.meowflux.fakes.catCounterReducer
-import com.github.rougsig.meowflux.fakes.duplicateMiddleware
+import com.github.rougsig.meowflux.fakes.MotdAction.MotdAddFirstWordAction
+import com.github.rougsig.meowflux.fakes.MotdAction.MotdAddSecondWordAction
+import com.github.rougsig.meowflux.fakes.MotdAction.MotdAddThirdWordAction
+import com.github.rougsig.meowflux.fakes.MotdAction.MotdAddForthWordAction
+import com.github.rougsig.meowflux.fakes.MotdAction.MotdAddBangSignAction
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
@@ -115,5 +119,37 @@ class StoreTest : CoroutineScope by GlobalScope {
     // Assert
     assertThat(store.getState())
       .isEqualTo(CatCounter(catCount = 2))
+  }
+
+  @Test
+  fun `combined reducer extension test`() {
+    // Arrange
+    val storeInitialState = "MOTD:"
+    val store = Store(
+      initialState = storeInitialState,
+      reducer = CombinedReducer<MotdAction, String>(
+              storeInitialState,
+        listOf(
+          TypedReducer<MotdAddFirstWordAction, String>(storeInitialState, { action, previousState -> "$previousState Cat" }),
+          TypedReducer<MotdAddSecondWordAction, String>(storeInitialState, { action, previousState -> "$previousState likes" }),
+          TypedReducer<MotdAddThirdWordAction, String>(storeInitialState, { action, previousState -> "$previousState strong" }),
+          TypedReducer<MotdAddForthWordAction, String>(storeInitialState, { action, previousState -> "$previousState hugs" }),
+          TypedReducer<MotdAddBangSignAction, String>(storeInitialState, { action, previousState -> "$previousState!" })
+        )
+      )
+    )
+
+    // Act
+    runBlocking {
+      store.dispatch(MotdAddFirstWordAction).join()
+      store.dispatch(MotdAddSecondWordAction).join()
+      store.dispatch(MotdAddThirdWordAction).join()
+      store.dispatch(MotdAddForthWordAction).join()
+      store.dispatch(MotdAddBangSignAction).join()
+    }
+
+    // Assert
+    assertThat(store.getState())
+      .isEqualTo("MOTD: Cat likes strong hugs!")
   }
 }

@@ -1,4 +1,4 @@
-package com.github.rougsig.meowflux.android.demo
+package com.github.rougsig.meowflux.android.demo.app
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

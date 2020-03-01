@@ -1,3 +1,6 @@
-include ':meowflux'
-include ':android-demo:app'
-include ':meowflux-android'
+include ':meowflux',
+  ':meowflux-android',
+
+  ':android-demo:app',
+  ':android-demo:di',
+  ':android-demo:store:root'

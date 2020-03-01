@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
@@ -6,7 +6,6 @@ android {
   compileSdkVersion ApkConfig.COMPILE_SDK_VERSION
 
   defaultConfig {
-    applicationId ApkConfig.APPLICATION_ID
     minSdkVersion ApkConfig.MIN_SDK_VERSION
     targetSdkVersion ApkConfig.TARGET_SDK_VERSION
     versionCode ApkConfig.VERSION_CODE
@@ -23,18 +22,6 @@ android {
     main.java.srcDirs += 'src/main/kotlin'
     test.java.srcDirs += 'src/test/kotlin'
   }
-
-  packagingOptions {
-    exclude 'META-INF/DEPENDENCIES'
-    exclude 'META-INF/LICENSE'
-    exclude 'META-INF/LICENSE.txt'
-    exclude 'META-INF/license.txt'
-    exclude 'META-INF/NOTICE'
-    exclude 'META-INF/NOTICE.txt'
-    exclude 'META-INF/notice.txt'
-    exclude 'META-INF/ASL2.0'
-    exclude("META-INF/*.kotlin_module")
-  }
 }
 
 androidExtensions {
@@ -43,11 +30,8 @@ androidExtensions {
 }
 
 dependencies {
-  implementation project(":meowflux")
-  implementation project(":meowflux-android")
-  implementation project(":android-demo:di")
-  implementation project(":android-demo:store:root")
-
   implementation Deps.coreLibs
-  implementation Deps.androidLibs
+  testImplementation Deps.testLibs
+
+  implementation project(":android-demo:store:root")
 }

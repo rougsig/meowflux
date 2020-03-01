@@ -30,6 +30,8 @@ androidExtensions {
 }
 
 dependencies {
+  implementation project(":meowflux")
+
   implementation Deps.coreLibs
   testImplementation Deps.testLibs
 }

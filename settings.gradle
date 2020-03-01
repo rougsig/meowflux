@@ -1,2 +1,3 @@
 include ':meowflux'
 include ':android-demo:app'
+include ':meowflux-android'

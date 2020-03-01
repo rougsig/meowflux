@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/android-demo" />
             <option value="$PROJECT_DIR$/android-demo/app" />
+            <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/meowflux" />
             <option value="$PROJECT_DIR$/meowflux-android" />
           </set>

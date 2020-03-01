@@ -1,6 +1,35 @@
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+  compileSdkVersion ApkConfig.COMPILE_SDK_VERSION
+
+  defaultConfig {
+    minSdkVersion ApkConfig.MIN_SDK_VERSION
+    targetSdkVersion ApkConfig.TARGET_SDK_VERSION
+    versionCode ApkConfig.VERSION_CODE
+    versionName ApkConfig.VERSION_NAME
+    multiDexEnabled true
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+    test.java.srcDirs += 'src/test/kotlin'
+  }
+}
+
+androidExtensions {
+  experimental = true
+  defaultCacheImplementation = "SPARSE_ARRAY"
+}
 
 dependencies {
-  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.61'
+  implementation Deps.coreLibs
+  testImplementation Deps.testLibs
 }

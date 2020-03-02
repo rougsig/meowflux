@@ -8,23 +8,23 @@ class StateDiff<S : Any> {
 
   fun <T> diff(
     mapper: (S) -> T,
-    comparator: (newValue: T, oldValue: T) -> Boolean,
+    shouldUpdate: (previousState: T, newState: T) -> Boolean,
     block: (T) -> Unit
   ) {
     diffs.add { ps, ns ->
       val newValue = mapper(ns)
-      if (ps == null || comparator(newValue, mapper(ps))) {
+      if (ps == null || shouldUpdate(mapper(ps), newValue)) {
         block(newValue)
       }
     }
   }
 
   fun update(newState: S) {
-    diffs.forEach { it(previousState, newState) }
+    diffs.forEach { diff -> diff(previousState, newState) }
     previousState = newState
   }
 }
 
 fun <S : Any, T> StateDiff<S>.diff(mapper: (S) -> T, block: (T) -> Unit) {
-  diff(mapper, { newValue, oldValue -> newValue == oldValue }, block)
+  diff(mapper, { p, n -> p != n }, block)
 }

@@ -12,15 +12,17 @@ fun <S : Any> Flow<S>.observe(view: View, init: StateDiff<S>.() -> Unit) {
   view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
     private var scope: CoroutineScope? = null
     private val diff = StateDiff<S>().also(init)
-    override fun onViewDetachedFromWindow(v: View?) {
+    override fun onViewAttachedToWindow(v: View?) {
       scope = MainScope().also { scope ->
         scope.launch {
-          this@observe.collect { diff.update(it) }
+          this@observe.collect {
+            diff.update(it)
+          }
         }
       }
     }
 
-    override fun onViewAttachedToWindow(v: View?) {
+    override fun onViewDetachedFromWindow(v: View?) {
       scope?.cancel()
       scope = null
     }

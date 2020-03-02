@@ -10,7 +10,7 @@ interface StoreContainer<S : Any> {
 fun <S : Any> Context.store(): Store<S> {
   val storeContainer = this.applicationContext as? StoreContainer<S>
   requireNotNull(storeContainer) {
-    "Failed to get store from context because application was not implement StoreContainer."
+    "Failed to get store from the context because application does not implement StoreContainer."
   }
   return storeContainer.store
 }

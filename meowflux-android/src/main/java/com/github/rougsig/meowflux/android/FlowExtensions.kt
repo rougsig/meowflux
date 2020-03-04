@@ -6,14 +6,23 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 fun <S : Any> Flow<S>.observe(view: View, init: StateDiff<S>.() -> Unit) {
+  val diff = StateDiff<S>().also(init)
+
+  var scope: CoroutineScope? = MainScope().also { scope ->
+    scope.launch {
+      this@observe.take(1).collect {
+        diff.update(it)
+      }
+    }
+  }
+
   view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-    private var scope: CoroutineScope? = null
-    private val diff = StateDiff<S>().also(init)
     override fun onViewAttachedToWindow(v: View?) {
-      scope = MainScope().also { scope ->
+      scope = (scope ?: MainScope()).also { scope ->
         scope.launch {
           this@observe.collect {
             diff.update(it)

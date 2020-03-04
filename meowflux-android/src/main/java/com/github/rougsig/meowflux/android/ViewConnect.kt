@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.map
 
 fun <V : View, S : Any, SP : Any, DP : Any> connect(
   viewConstructor: (Context, Flow<SP>, DP) -> V,
-  mapStateToProps: (S) -> SP,
+  mapStateToProps: (S, Context) -> SP,
   mapDispatchToProps: (StoreDispatcher) -> DP
 ): (Context) -> V {
   return { context ->
     val store = context.store<S>()
     viewConstructor(
       context,
-      store.stateFlow.map { mapStateToProps(it) },
+      store.stateFlow.map { mapStateToProps(it, context) },
       mapDispatchToProps(store)
     )
   }
@@ -23,14 +23,14 @@ fun <V : View, S : Any, SP : Any, DP : Any> connect(
 
 fun <V : View, S : Any, SP : Any, DP : Any, OP : Any> connect(
   viewConstructor: (Context, Flow<SP>, DP, OP) -> V,
-  mapStateToProps: (S) -> SP,
+  mapStateToProps: (S, Context) -> SP,
   mapDispatchToProps: (StoreDispatcher) -> DP
 ): (Context, ownProps: OP) -> V {
   return { context, ownProps ->
     val store = context.store<S>()
     viewConstructor(
       context,
-      store.stateFlow.map { mapStateToProps(it) },
+      store.stateFlow.map { mapStateToProps(it, context) },
       mapDispatchToProps(store),
       ownProps
     )

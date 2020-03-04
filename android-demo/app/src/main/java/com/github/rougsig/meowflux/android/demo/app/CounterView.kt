@@ -67,7 +67,7 @@ class CounterView(
   }
 }
 
-private fun mapStateToProps(state: RootState): StateProps {
+private fun mapStateToProps(state: RootState, context: Context): StateProps {
   return StateProps(state.count)
 }
 

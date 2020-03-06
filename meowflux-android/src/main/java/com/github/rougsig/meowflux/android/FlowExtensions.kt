@@ -1,31 +1,21 @@
 package com.github.rougsig.meowflux.android
 
 import android.view.View
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 
 fun <S : Any> Flow<S>.observe(view: View, init: StateDiff<S>.() -> Unit) {
   val diff = StateDiff<S>().also(init)
-
-  var scope: CoroutineScope? = MainScope().also { scope ->
-    scope.launch {
-      this@observe.take(1).collect {
-        diff.update(it)
-      }
-    }
-  }
-
+  runBlocking { diff.update(first()) }
   view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+    var scope: CoroutineScope? = null
     override fun onViewAttachedToWindow(v: View?) {
-      scope = (scope ?: MainScope()).also { scope ->
+      scope = MainScope().also { scope ->
         scope.launch {
-          this@observe.collect {
-            diff.update(it)
+          collect {
+            if (isActive && view.isAttachedToWindow) diff.update(it)
           }
         }
       }

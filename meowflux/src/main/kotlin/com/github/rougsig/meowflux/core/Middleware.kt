@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 
 typealias Middleware<S> = (
   storeScope: CoroutineScope,
-  dispatch: Dispatcher,
+  dispatch: SuspendDispatcher,
   getState: () -> S,
-  next: Dispatcher
-) -> Dispatcher
+  next: SuspendDispatcher
+) -> SuspendDispatcher

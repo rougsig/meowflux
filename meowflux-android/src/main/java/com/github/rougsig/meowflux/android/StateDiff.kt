@@ -6,16 +6,12 @@ class StateDiff<S : Any> {
   private val diffs = ArrayDeque<(ps: S?, ns: S) -> Unit>()
   private var previousState: S? = null
 
-  fun <T> diff(
-    mapper: (S) -> T,
-    shouldUpdate: (previousState: T, newState: T) -> Boolean,
-    block: (T) -> Unit
+  fun onUpdate(
+    shouldUpdate: (previousState: S, newState: S) -> Boolean,
+    block: (S) -> Unit
   ) {
     diffs.add { ps, ns ->
-      val newValue = mapper(ns)
-      if (ps == null || shouldUpdate(mapper(ps), newValue)) {
-        block(newValue)
-      }
+      if (ps == null || shouldUpdate(ps, ns)) block(ns)
     }
   }
 
@@ -25,6 +21,11 @@ class StateDiff<S : Any> {
   }
 }
 
-fun <S : Any, T> StateDiff<S>.diff(mapper: (S) -> T, block: (T) -> Unit) {
-  diff(mapper, { p, n -> p != n }, block)
+fun <S : Any, T> StateDiff<S>.diff(vararg mappers: (S) -> T, block: (S) -> Unit) {
+  onUpdate({ p, n -> mappers.any { mapper -> mapper(p) != mapper(n) } }, block)
+}
+
+fun <S : Any> StateDiff<S>.onFirstUpdate(block: (S) -> Unit) {
+  var isFirstUpdate = true
+  onUpdate({ _, _ -> isFirstUpdate }, { isFirstUpdate = false; block(it) })
 }

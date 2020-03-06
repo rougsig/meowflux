@@ -10,7 +10,7 @@ import com.github.rougsig.meowflux.android.demo.store.root.CounterAction
 import com.github.rougsig.meowflux.android.demo.store.root.RootState
 import com.github.rougsig.meowflux.android.diff
 import com.github.rougsig.meowflux.android.observe
-import com.github.rougsig.meowflux.core.StoreDispatcher
+import com.github.rougsig.meowflux.core.Dispatcher
 import com.squareup.contour.ContourLayout
 import kotlinx.coroutines.flow.Flow
 
@@ -60,8 +60,8 @@ class CounterView(
 
   init {
     stateProps.observe(this) {
-      diff(StateProps::count) {
-        counter.text = it.toString()
+      diff(StateProps::count) { sp ->
+        counter.text = sp.count.toString()
       }
     }
   }
@@ -71,10 +71,10 @@ private fun mapStateToProps(state: RootState, context: Context): StateProps {
   return StateProps(state.count)
 }
 
-private fun mapDispatchToProps(dispatcher: StoreDispatcher): DispatchProps {
+private fun mapDispatchToProps(dispatcher: Dispatcher): DispatchProps {
   return DispatchProps(
-    increment = { dispatcher.dispatch(CounterAction.Increment) },
-    decrement = { dispatcher.dispatch(CounterAction.Decrement) }
+    increment = { dispatcher(CounterAction.Increment) },
+    decrement = { dispatcher(CounterAction.Decrement) }
   )
 }
 

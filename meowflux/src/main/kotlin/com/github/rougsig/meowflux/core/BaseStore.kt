@@ -16,7 +16,7 @@ internal class BaseStore<S : Any>(
 ) : Store<S>, CoroutineScope by scope + newSingleThreadContext("Store") {
   private val stateChannel = ConflatedBroadcastChannel<S>()
 
-  private val dispatcher = middleware.reversed().fold<Middleware<S>, Dispatcher>({ action ->
+  private val dispatcher = middleware.reversed().fold<Middleware<S>, SuspendDispatcher>({ action ->
     stateChannel.send(reducer(action, stateChannel.valueOrNull))
   }) { prevDispatcher, nextMiddleware ->
     nextMiddleware(this, ::dispatchRoot, stateChannel::value, prevDispatcher)

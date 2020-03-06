@@ -1,7 +1,7 @@
 package com.github.rougsig.meowflux.fakes
 
 import com.github.rougsig.meowflux.core.Action
-import com.github.rougsig.meowflux.extension.TypedReducer
+import com.github.rougsig.meowflux.core.TypedReducer
 import com.github.rougsig.meowflux.fakes.CatCounterAction.*
 
 data class CatCounter(
@@ -9,8 +9,6 @@ data class CatCounter(
 )
 
 sealed class CatCounterAction : Action {
-  object FetchCatCounter : Action
-
   object Increment : CatCounterAction()
   object Decrement : CatCounterAction()
   data class SetValue(val newValue: Int) : CatCounterAction()

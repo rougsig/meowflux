@@ -7,11 +7,10 @@ import com.github.rougsig.meowflux.fakes.FakeReducer
 import com.github.rougsig.meowflux.fakes.catCounterReducer
 import com.github.rougsig.meowflux.fakes.duplicateMiddleware
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import org.assertj.core.api.Assertions.assertThat
 import org.testng.annotations.Test
-import java.util.*
 import kotlin.concurrent.thread
 
 @FlowPreview
@@ -33,7 +32,7 @@ class StoreTest : CoroutineScope by GlobalScope {
 
     // Assert
     assertThat(reducer.actionHistory)
-      .containsExactly(MeowFluxInit)
+      .containsExactly(StoreInit)
   }
 
   @Test
@@ -55,15 +54,16 @@ class StoreTest : CoroutineScope by GlobalScope {
   }
 
   @Test
-  fun `dispatch from multiply thread should be not throw ConcurrentModificationException`() {
+  fun `dispatch from multiply thread should be processed correctly`() {
     // Arrange
     val store = Store(
       initialState = CatCounter(),
-      reducer = catCounterReducer
+      reducer = catCounterReducer,
+      middleware = listOf(duplicateMiddleware)
     )
 
     // Act
-    (0..255).map {
+    (0 until 64).map {
       thread {
         runBlocking { store.dispatch(Increment).join() }
       }
@@ -71,7 +71,7 @@ class StoreTest : CoroutineScope by GlobalScope {
 
     // Assert
     assertThat(store.state)
-      .isEqualTo(CatCounter(catCount = 256))
+      .isEqualTo(CatCounter(catCount = 128))
   }
 
   @Test
@@ -89,9 +89,7 @@ class StoreTest : CoroutineScope by GlobalScope {
 
     // Assert
     val items = runBlocking {
-      val items = LinkedList<Any>()
-      store.stateFlow.take(1).collect { items.add(it) }
-      items
+      store.stateFlow.take(1).toList()
     }
 
     assertThat(items)

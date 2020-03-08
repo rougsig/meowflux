@@ -2,14 +2,14 @@ package com.github.rougsig.meowflux.android
 
 import android.content.Context
 import android.view.View
-import com.github.rougsig.meowflux.core.Action
+import com.github.rougsig.meowflux.core.Dispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 fun <V : View, S : Any, SP : Any, DP : Any> connect(
   viewConstructor: (Context, Flow<SP>, DP) -> V,
   mapStateToProps: (S, Context) -> SP,
-  mapDispatchToProps: ((Action) -> Unit) -> DP
+  mapDispatchToProps: (Dispatcher) -> DP
 ): (Context) -> V {
   return { context ->
     val store = context.store<S>()
@@ -24,7 +24,7 @@ fun <V : View, S : Any, SP : Any, DP : Any> connect(
 fun <V : View, S : Any, SP : Any, DP : Any, OP : Any> connect(
   viewConstructor: (Context, Flow<SP>, DP, OP) -> V,
   mapStateToProps: (S, Context) -> SP,
-  mapDispatchToProps: ((Action) -> Unit) -> DP
+  mapDispatchToProps: (Dispatcher) -> DP
 ): (Context, ownProps: OP) -> V {
   return { context, ownProps ->
     val store = context.store<S>()

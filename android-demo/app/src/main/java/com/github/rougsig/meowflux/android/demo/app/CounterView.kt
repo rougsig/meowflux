@@ -13,6 +13,8 @@ import com.github.rougsig.meowflux.android.observe
 import com.github.rougsig.meowflux.core.Dispatcher
 import com.squareup.contour.ContourLayout
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.takeWhile
 
 data class StateProps(
   val count: Int
@@ -59,7 +61,8 @@ class CounterView(
   }
 
   init {
-    stateProps.observe(this) {
+    stateProps
+      .observe(this) {
       diff(StateProps::count) { sp ->
         counter.text = sp.count.toString()
       }

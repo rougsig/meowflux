@@ -1,6 +1,6 @@
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 object Deps {
-  private const val kotlinVersion = "1.3.61"
+  private const val kotlinVersion = "1.3.70"
 
   const val androidGradlePlugin = "com.android.tools.build:gradle:3.5.3"
   const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
@@ -9,7 +9,7 @@ object Deps {
 
   val coreLibs = arrayOf(
     kotlinStdLibJdk7,
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3"
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4"
   )
 
   private const val moshiVersion = "1.9.2"

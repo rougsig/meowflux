@@ -2,6 +2,6 @@
 *.iml
 .kobalt/
 .gradle/
-build/
+../meowflux/build/
 kobaltBuild/
 out

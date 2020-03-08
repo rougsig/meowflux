@@ -1,0 +1,7 @@
+.idea/*
+*.iml
+.kobalt/
+.gradle/
+../meowflux/build/
+kobaltBuild/
+out

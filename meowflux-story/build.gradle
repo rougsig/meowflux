@@ -1,0 +1,16 @@
+apply plugin: 'kotlin'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation project(":meowflux-core")
+
+  implementation Deps.coreLibs
+  testImplementation Deps.testLibs
+}
+
+test {
+  useTestNG()
+}

@@ -43,7 +43,7 @@ androidExtensions {
 }
 
 dependencies {
-  implementation project(":meowflux")
+  implementation project(':meowflux-core')
   implementation project(":meowflux-android")
   implementation project(":android-demo:di")
   implementation project(":android-demo:store:root")

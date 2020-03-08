@@ -1,6 +1,7 @@
 package com.github.rougsig.meowflux.core
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.asFlow
@@ -31,9 +32,13 @@ internal class BaseStore<S : Any>(
     dispatch(MeowFluxInit)
   }
 
-  override fun getState() = stateChannel.value
   override val stateFlow = stateChannel.asFlow()
-  override fun dispatch(action: Action) = launch { dispatcher(action) }
+  override val state: S
+    get() = stateChannel.value
+
+  override fun dispatch(action: Action) = launch {
+    dispatchRoot(action)
+  }
 }
 
 @FlowPreview

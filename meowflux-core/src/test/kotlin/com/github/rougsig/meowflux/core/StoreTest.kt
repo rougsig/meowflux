@@ -50,7 +50,7 @@ class StoreTest : CoroutineScope by GlobalScope {
     }
 
     // Assert
-    assertThat(store.getState())
+    assertThat(store.state)
       .isEqualTo(CatCounter(catCount = 10))
   }
 
@@ -70,7 +70,7 @@ class StoreTest : CoroutineScope by GlobalScope {
     }.forEach(Thread::join)
 
     // Assert
-    assertThat(store.getState())
+    assertThat(store.state)
       .isEqualTo(CatCounter(catCount = 256))
   }
 
@@ -113,7 +113,7 @@ class StoreTest : CoroutineScope by GlobalScope {
     }
 
     // Assert
-    assertThat(store.getState())
+    assertThat(store.state)
       .isEqualTo(CatCounter(catCount = 2))
   }
 }

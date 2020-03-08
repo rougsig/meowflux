@@ -17,8 +17,9 @@
             <option value="$PROJECT_DIR$/android-demo/store" />
             <option value="$PROJECT_DIR$/android-demo/store/root" />
             <option value="$PROJECT_DIR$/buildSrc" />
-            <option value="$PROJECT_DIR$/meowflux" />
             <option value="$PROJECT_DIR$/meowflux-android" />
+            <option value="$PROJECT_DIR$/meowflux-core" />
+            <option value="$PROJECT_DIR$/meowflux-story" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

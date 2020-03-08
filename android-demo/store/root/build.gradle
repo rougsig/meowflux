@@ -1,6 +1,6 @@
 apply plugin: 'kotlin'
 
 dependencies {
-  api project(":meowflux")
+  api project(':meowflux-core')
   implementation Deps.coreLibs
 }
